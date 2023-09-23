@@ -3,14 +3,27 @@
     <div ref="screenRef" class="editor-container">
       <!-- 这个是虚假内容， 为了产生滚动条 -->
       <div ref="containerRef" class="editor-container-canvas">
-        <div ref="canvasRef" class="editor-container-canvas__content"></div>
+        <div ref="canvasRef" :style="canvasStyle" class="editor-container-canvas__content"></div>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, onMounted, computed } from 'vue';
+import { useEditScreenStore } from './data/bigScreenGlobalStore'
+
+const editScreenStore = useEditScreenStore()
+
+const canvasStyle = computed(() => {
+  return {
+      width: editScreenStore.canvasContaniter.width + 'px',
+      height: editScreenStore.canvasContaniter.height + 'px',
+      transform: `scale(${editScreenStore.canvasContaniter.scale})`
+  }
+} )
+
+
 </script>
 
 <style lang="scss" scoped>
@@ -36,8 +49,8 @@ import { ref } from 'vue';
         position: relative;
         top: 20px;
         left: 20px;
-        width: 600px;
-        height: 600px;
+        // width: 600px;
+        // height: 600px;
         background-color: ghostwhite;
 
         transform-origin: 0;

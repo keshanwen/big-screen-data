@@ -8,6 +8,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "loadsh": "^0.0.4",
+    "mitt": "^3.0.1",
     "pinia": "^2.1.6",
     "sass": "^1.68.0",
     "vue": "^3.3.4",
