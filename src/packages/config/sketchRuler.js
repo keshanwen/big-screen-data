@@ -1,0 +1,1 @@
+export const THICK = 16
