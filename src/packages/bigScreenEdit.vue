@@ -31,7 +31,7 @@ import {
   watch,
   nextTick,
 } from 'vue';
-import SketchRule from './components/sketchRule.vue';
+import SketchRule from './layout/sketchRule.vue';
 import { usebigScreenStore } from './data/bigScreenGlobalStore';
 import { useSketchRule } from './hooks/useSketchRule';
 

@@ -6,8 +6,8 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
 
   // 画布相关的信息
     let canvasContaniter = reactive({
-      width: 300,
-      height: 300,
+      width: 600,
+      height: 600,
       scale: 1
     })
 
