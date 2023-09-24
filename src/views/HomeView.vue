@@ -1,21 +1,29 @@
 <script setup>
-import Header from '@/packages/layout/header.vue';
+import { ref, provide } from 'vue'
+import EditHeader from '@/packages/layout/header.vue';
 import LeftComponents from '@/packages/layout/leftComponents/index.vue';
 import RightProps from '@/packages/layout/rightProps/index.vue';
 import BigScreenEdit from '@/packages/bigScreenEdit.vue';
+import { BigScreenEditRefKey } from '../packages/config/provideInjectKey';
+
+let bigScreenEditRef = ref()
+
+// 将编辑器实例传递下去
+provide(BigScreenEditRefKey, bigScreenEditRef)
+
 </script>
 
 <template>
   <div class="edit-page-home">
     <div class="edit-page-header">
-      <Header />
+      <EditHeader />
     </div>
     <div class="edit-page-content">
       <div class="edit-page-content-left">
         <LeftComponents />
       </div>
       <div class="edit-page-content-center">
-        <BigScreenEdit />
+        <BigScreenEdit ref="bigScreenEditRef"/>
       </div>
       <div class="edit-page-content-right">
         <RightProps />
@@ -39,7 +47,7 @@ import BigScreenEdit from '@/packages/bigScreenEdit.vue';
     overflow: auto;
     height: calc(100% - 80px);
     &-left {
-      width: 260px;
+      width: 200px;
       background-color: bisque;
     }
     &-center {
@@ -47,7 +55,7 @@ import BigScreenEdit from '@/packages/bigScreenEdit.vue';
       overflow: auto;
     }
     &-right {
-      width: 260px;
+      width: 200px;
       background-color: bisque;
     }
   }

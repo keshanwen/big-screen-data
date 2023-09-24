@@ -14,7 +14,11 @@
           ref="canvasRef"
           :style="canvasStyle"
           class="editor-container-canvas__content"
-        ></div>
+        >
+        <template v-for="block in bigScreenStore.state.blocks" :key="block.uuid">
+          <EditorBlock :block="block"/>
+        </template>
+        </div>
       </div>
     </div>
   </div>
@@ -30,10 +34,13 @@ import {
   reactive,
   watch,
   nextTick,
+  defineExpose
 } from 'vue';
 import SketchRule from './layout/sketchRule.vue';
 import { usebigScreenStore } from './data/bigScreenGlobalStore';
 import { useSketchRule } from './hooks/useSketchRule';
+import EditorBlock from './layout/editorBlock.vue'
+
 
 let sketchRuleRef = shallowRef();
 let wrapper = shallowRef();
@@ -76,6 +83,10 @@ const init = () => {
 onMounted(() => {
   init();
 });
+
+defineExpose({
+  canvasRef
+})
 </script>
 
 <style lang="scss" scoped>
