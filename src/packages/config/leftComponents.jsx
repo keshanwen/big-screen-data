@@ -2,6 +2,7 @@ import { defineAsyncComponent } from 'vue';
 /* 业务组件 */
 const MyText = defineAsyncComponent(() => import('../components/text.vue'));
 const MyButton = defineAsyncComponent(() => import('../components/button.vue'));
+const MyBar = defineAsyncComponent(() => import('../components/bar.vue'));
 
 function createEditorConfig() {
   const componentList = [];
@@ -30,4 +31,10 @@ registerConfig.register({
   preview: '按钮icon',
   render: MyButton,
   key: 'button',
+});
+registerConfig.register({
+  label: 'bar',
+  preview: 'baricon',
+  render: MyBar,
+  key: 'bar',
 });
