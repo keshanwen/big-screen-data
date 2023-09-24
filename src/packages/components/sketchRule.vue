@@ -14,11 +14,11 @@
 import { reactive, watch, PropType, computed, defineExpose } from 'vue';
 import SketchRule from 'vue3-sketch-ruler';
 import 'vue3-sketch-ruler/lib/style.css';
-import { useEditScreenStore } from '../data/bigScreenGlobalStore'
+import { usebigScreenStore } from '../data/bigScreenGlobalStore'
 import { THICK } from '../config/sketchRuler'
 
 
-const editScreenStore = useEditScreenStore()
+const bigScreenStore = usebigScreenStore()
 
 let sketchRuleState = reactive({
     width: 600,
@@ -32,7 +32,7 @@ let sketchRuleState = reactive({
     needUpdate: false
 })
 
-let scale = computed( () => editScreenStore.canvasContaniter.scale)
+let scale = computed( () => bigScreenStore.canvasContaniter.scale)
 
 
 const handleCornerClick = (e) => {

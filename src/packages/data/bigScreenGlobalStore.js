@@ -1,7 +1,7 @@
 import { ref, reactive, computed } from 'vue';
 import { defineStore } from 'pinia';
 
-export const useEditScreenStore = defineStore('editScreenStore', () => {
+export const usebigScreenStore = defineStore('bigScreenStore', () => {
 
 
   // 画布相关的信息

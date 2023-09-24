@@ -32,7 +32,7 @@ import {
   nextTick,
 } from 'vue';
 import SketchRule from './components/sketchRule.vue';
-import { useEditScreenStore } from './data/bigScreenGlobalStore';
+import { usebigScreenStore } from './data/bigScreenGlobalStore';
 import { useSketchRule } from './hooks/useSketchRule';
 
 let sketchRuleRef = shallowRef();
@@ -40,15 +40,15 @@ let wrapper = shallowRef();
 let screenRef = shallowRef();
 let canvasRef = shallowRef();
 
-const editScreenStore = useEditScreenStore();
+const bigScreenStore = usebigScreenStore();
 const { handleScroll: handleScrollSketRule, handleWheel: handleWheelSketRule } =
   useSketchRule();
 
 const canvasStyle = computed(() => {
   return {
-    width: editScreenStore.canvasContaniter.width + 'px',
-    height: editScreenStore.canvasContaniter.height + 'px',
-    transform: `scale(${editScreenStore.canvasContaniter.scale})`,
+    width: bigScreenStore.canvasContaniter.width + 'px',
+    height: bigScreenStore.canvasContaniter.height + 'px',
+    transform: `scale(${bigScreenStore.canvasContaniter.scale})`,
   };
 });
 
@@ -61,12 +61,12 @@ const getScreenWidthHeight = () => {
 };
 
 const handleScroll = () => {
-  handleScrollSketRule(screenRef, canvasRef, sketchRuleRef, editScreenStore);
+  handleScrollSketRule(screenRef, canvasRef, sketchRuleRef, bigScreenStore);
 };
 
 // 控制缩放值
 const handleWheel = (e) => {
-  handleWheelSketRule(e, editScreenStore, handleScroll);
+  handleWheelSketRule(e, bigScreenStore, handleScroll);
 };
 
 const init = () => {
