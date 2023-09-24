@@ -1,15 +1,11 @@
 <script setup>
-import { ref, provide } from 'vue'
+import { ref, provide, nextTick} from 'vue'
 import EditHeader from '@/packages/layout/header.vue';
 import LeftComponents from '@/packages/layout/leftComponents/index.vue';
 import RightProps from '@/packages/layout/rightProps/index.vue';
 import BigScreenEdit from '@/packages/bigScreenEdit.vue';
-import { BigScreenEditRefKey } from '../packages/config/provideInjectKey';
 
-let bigScreenEditRef = ref()
 
-// 将编辑器实例传递下去
-provide(BigScreenEditRefKey, bigScreenEditRef)
 
 </script>
 
@@ -23,7 +19,7 @@ provide(BigScreenEditRefKey, bigScreenEditRef)
         <LeftComponents />
       </div>
       <div class="edit-page-content-center">
-        <BigScreenEdit ref="bigScreenEditRef"/>
+        <BigScreenEdit/>
       </div>
       <div class="edit-page-content-right">
         <RightProps />

@@ -13,6 +13,7 @@
         <div
           ref="canvasRef"
           :style="canvasStyle"
+          id="editor-container-canvas__content"
           class="editor-container-canvas__content"
         >
         <template v-for="block in bigScreenStore.state.blocks" :key="block.uuid">
@@ -42,10 +43,10 @@ import { useSketchRule } from './hooks/useSketchRule';
 import EditorBlock from './layout/editorBlock.vue'
 
 
-let sketchRuleRef = shallowRef();
-let wrapper = shallowRef();
-let screenRef = shallowRef();
-let canvasRef = shallowRef();
+let sketchRuleRef = ref();
+let wrapper = ref();
+let screenRef = ref();
+let canvasRef = ref();
 
 const bigScreenStore = usebigScreenStore();
 const { handleScroll: handleScrollSketRule, handleWheel: handleWheelSketRule } =
@@ -83,10 +84,6 @@ const init = () => {
 onMounted(() => {
   init();
 });
-
-defineExpose({
-  canvasRef
-})
 </script>
 
 <style lang="scss" scoped>

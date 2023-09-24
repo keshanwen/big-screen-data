@@ -26,11 +26,22 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
     })
   }
 
+  // 更新状态
+  const updateBigScreenState = (key, value) => {
+    key.split('.').reduce((aum, cur, index, arr) => {
+      if (index === arr.length - 1) {
+        state[cur] = value
+      }
+      return state[cur]
+    }, state)
+  }
+
 
 
   return {
     canvasContaniter,
     state,
-    updateCanvasContaniter
+    updateCanvasContaniter,
+    updateBigScreenState
   };
 });
