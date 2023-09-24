@@ -19,6 +19,19 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
     ],
   });
 
+  // 失焦，和未失焦的block
+  const focusData = computed(() => {
+      let focus = [];
+      let unfocused = [];
+      state.blocks.forEach(block => (block.focus ? focus : unfocused).push(block));
+      return { focus, unfocused }
+  });
+
+  // 让所有block 失去焦点
+   const clearBlockFocus = () => {
+        state.blocks.forEach(block => block.focus = false);
+    }
+
   // 更新画布相关的信息
   const updateCanvasContaniter = (obj) => {
     Object.keys(obj).forEach((key) => {
@@ -41,6 +54,8 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
   return {
     canvasContaniter,
     state,
+    focusData,
+    clearBlockFocus,
     updateCanvasContaniter,
     updateBigScreenState
   };

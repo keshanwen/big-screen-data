@@ -12,6 +12,7 @@
       <div ref="containerRef" class="editor-container-canvas">
         <div
           ref="canvasRef"
+          @mousedown="containerMousedown"
           :style="canvasStyle"
           id="editor-container-canvas__content"
           class="editor-container-canvas__content"
@@ -25,7 +26,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script setup>
 import {
   ref,
   shallowRef,
@@ -40,6 +41,7 @@ import {
 import SketchRule from './layout/sketchRule.vue';
 import { usebigScreenStore } from './data/bigScreenGlobalStore';
 import { useSketchRule } from './hooks/useSketchRule';
+import { useFocus } from './hooks/useFocus'
 import EditorBlock from './layout/editorBlock.vue'
 
 
@@ -49,6 +51,7 @@ let screenRef = ref();
 let canvasRef = ref();
 
 const bigScreenStore = usebigScreenStore();
+const { containerMousedown } = useFocus(bigScreenStore)
 const { handleScroll: handleScrollSketRule, handleWheel: handleWheelSketRule } =
   useSketchRule();
 
