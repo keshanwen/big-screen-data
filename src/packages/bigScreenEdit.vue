@@ -17,9 +17,14 @@
           id="editor-container-canvas__content"
           class="editor-container-canvas__content"
         >
-        <template v-for="block in bigScreenStore.state.blocks" :key="block.uuid">
-          <EditorBlock :block="block"/>
-        </template>
+          <template
+            v-for="(block, index) in bigScreenStore.state.blocks"
+            :key="block.uuid"
+          >
+            <EditorBlock :block="block" :index="index" :mousedownFn="mousedown" />
+          </template>
+          <!-- 辅助线 -->
+          <GuideLines :x="markLine.x" :y="markLine.y"/>
         </div>
       </div>
     </div>
@@ -36,14 +41,14 @@ import {
   reactive,
   watch,
   nextTick,
-  defineExpose
 } from 'vue';
 import SketchRule from './layout/sketchRule.vue';
 import { usebigScreenStore } from './data/bigScreenGlobalStore';
 import { useSketchRule } from './hooks/useSketchRule';
-import { useFocus } from './hooks/useFocus'
-import EditorBlock from './layout/editorBlock.vue'
-
+import { useFocus } from './hooks/useFocus';
+import { useBlockDragger } from './hooks/useBlockDragger';
+import EditorBlock from './layout/editorBlock.vue';
+import GuideLines from './layout/guideLines.vue';
 
 let sketchRuleRef = ref();
 let wrapper = ref();
@@ -51,9 +56,12 @@ let screenRef = ref();
 let canvasRef = ref();
 
 const bigScreenStore = usebigScreenStore();
-const { containerMousedown } = useFocus(bigScreenStore)
+const { containerMousedown } = useFocus(bigScreenStore);
 const { handleScroll: handleScrollSketRule, handleWheel: handleWheelSketRule } =
   useSketchRule();
+let { mousedown, markLine } = useBlockDragger(bigScreenStore);
+
+
 
 const canvasStyle = computed(() => {
   return {

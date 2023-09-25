@@ -17,6 +17,7 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
       { top: 100, left: 100, zIndex: 1, key: 'text', uuid: 0 },
       { top: 200, left: 200, zIndex: 1, key: 'button', uuid: 1 },
     ],
+    selectIndex: -1, // 表示没有任何一个被选中
   });
 
   // 失焦，和未失焦的block
@@ -26,6 +27,10 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
       state.blocks.forEach(block => (block.focus ? focus : unfocused).push(block));
       return { focus, unfocused }
   });
+
+    // 最后选择的那一个
+  const lastSelectBlock = computed(()=>state.blocks[state.selectIndex])
+
 
   // 让所有block 失去焦点
    const clearBlockFocus = () => {
@@ -55,6 +60,7 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
     canvasContaniter,
     state,
     focusData,
+    lastSelectBlock,
     clearBlockFocus,
     updateCanvasContaniter,
     updateBigScreenState
