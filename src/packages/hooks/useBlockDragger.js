@@ -2,20 +2,18 @@ import { reactive } from 'vue';
 import { events } from '../utils/events';
 import { START, END } from '../config/eventName';
 
-
-
 export function useBlockDragger(bigScreenStore) {
-    /* 注意带有数据的hook（定义在hook内 最外层的数据），不要多次引用，因为每引用一次，就会生成一份新的数据  */
+  /* 注意带有数据的hook（定义在hook内 最外层的数据），不要多次引用，因为每引用一次，就会生成一份新的数据  */
   let dragState = {
     startX: 0,
     startY: 0,
     dragging: false, // 默认不是正在拖拽
-    };
+  };
 
-    let markLine = reactive({
+  let markLine = reactive({
     x: null,
     y: null,
-});
+  });
 
   const mousedown = (e) => {
     console.log(bigScreenStore.lastSelectBlock);
@@ -117,7 +115,7 @@ export function useBlockDragger(bigScreenStore) {
       }
     }
     markLine.x = x; // markline 是一个响应式数据 x，y更新了会导致视图更新
-      markLine.y = y;
+    markLine.y = y;
 
     let durX = moveX - dragState.startX;
     let durY = moveY - dragState.startY;
@@ -128,17 +126,18 @@ export function useBlockDragger(bigScreenStore) {
   };
   const mouseup = (e) => {
     document.removeEventListener('mousemove', mousemove);
-      document.removeEventListener('mouseup', mouseup);
+    document.removeEventListener('mouseup', mouseup);
 
-       markLine.x = null;
-          markLine.y = null;
-        if(dragState.dragging){ // 如果只是点击就不会触发
-            events.emit(END);
-        }
+    markLine.x = null;
+    markLine.y = null;
+    if (dragState.dragging) {
+      // 如果只是点击就不会触发
+      events.emit(END);
+    }
   };
 
   return {
-      mousedown,
-      markLine
+    mousedown,
+    markLine,
   };
 }

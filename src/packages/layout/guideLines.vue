@@ -1,17 +1,18 @@
 <template>
-  <div v-if="props.x != null" :style="{ left: props.x + 'px'}" class="line-x"></div>
-  <div v-if="props.y != null" :style="{ top: props.y + 'px'}" class="line-y"></div>
+  <div v-if="props.markLine.x != null" :style="{ left: props.markLine.x + 'px'}" class="line-x"></div>
+  <div v-if="props.markLine.y != null" :style="{ top: props.markLine.y + 'px'}" class="line-y"></div>
 </template>
 <script setup lang='ts'>
 
 const props = defineProps({
-  x: {
-    type: Number,
-    default: null
-  },
-  y: {
-    type: Number,
-    default: null
+  markLine: {
+    type: Object,
+    default() {
+      return {
+        x: null,
+        y: null,
+      }
+    }
   }
 })
 

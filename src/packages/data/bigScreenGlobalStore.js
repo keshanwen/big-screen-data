@@ -14,8 +14,8 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
   // 画布上的组件
   let state = reactive({
     blocks: [
-      { top: 100, left: 100, zIndex: 1, key: 'text', uuid: 0 },
-      { top: 200, left: 200, zIndex: 1, key: 'button', uuid: 1 },
+      // { top: 100, left: 100, zIndex: 1, key: 'text', uuid: 0 },
+      // { top: 200, left: 200, zIndex: 1, key: 'button', uuid: 1 },
     ],
     selectIndex: -1, // 表示没有任何一个被选中
   });

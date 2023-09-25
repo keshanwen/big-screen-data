@@ -24,7 +24,7 @@
             <EditorBlock :block="block" :index="index" :mousedownFn="mousedown" />
           </template>
           <!-- 辅助线 -->
-          <GuideLines :x="markLine.x" :y="markLine.y"/>
+          <GuideLines :markLine="markLine"/>
         </div>
       </div>
     </div>
