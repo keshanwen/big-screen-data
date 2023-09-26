@@ -1,7 +1,7 @@
 <template>
   <div
     ref="blockRef"
-    @mousedown="(e) => blockMousedown(e, props.block, props.index)"
+    @mousedown="(e) => blockMousedown(e, props.block)"
     :style="blockStyles"
     :class="[
       props.block.focus ? 'editor-block-home-focus' : '',
@@ -22,10 +22,6 @@ const props = defineProps({
   block: {
     type: Object,
     required: true,
-  },
-  index: {
-    type: Number,
-    default: -1,
   },
   mousedownFn: {
     type: Function,

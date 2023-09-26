@@ -18,10 +18,10 @@
           class="editor-container-canvas__content"
         >
           <template
-            v-for="(block, index) in bigScreenStore.state.blocks"
+            v-for="block in bigScreenStore.state.blocks"
             :key="block.uuid"
           >
-            <EditorBlock :block="block" :index="index" :mousedownFn="mousedown" />
+            <EditorBlock :block="block" :mousedownFn="mousedown" />
           </template>
           <!-- 辅助线 -->
           <GuideLines :markLine="markLine"/>

@@ -29,7 +29,12 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
   });
 
     // 最后选择的那一个
-  const lastSelectBlock = computed(()=>state.blocks[state.selectIndex])
+  // const lastSelectBlock = computed(()=>state.blocks[state.selectIndex])
+  const lastSelectBlock = computed(() => {
+    return state.blocks.find((item) => {
+      return item.uuid == state.selectIndex
+    })
+  })
 
 
   // 让所有block 失去焦点
