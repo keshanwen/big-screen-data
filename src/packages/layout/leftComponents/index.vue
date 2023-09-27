@@ -16,11 +16,12 @@
 </template>
 <script setup>
 import { onMounted, inject, nextTick } from 'vue';
-import { registerConfig } from '../../config/leftComponents.jsx';
 import { usebigScreenStore } from '../../data/bigScreenGlobalStore';
 import { useMenuDragger } from '../../hooks/useMenuDragger';
+import { REGISTERCONFIG } from '../../config/provideInjectKey'
 
 
+const registerConfig = inject(REGISTERCONFIG)
 const bigScreenStore = usebigScreenStore();
 const componentList = registerConfig.componentList;
 

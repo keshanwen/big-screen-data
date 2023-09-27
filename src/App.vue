@@ -6,6 +6,28 @@
   <RouterView />
 </template>
 
-<style scoped>
+<style>
+
+.dropdown {
+    display: none;
+    position: absolute;
+    background: #fff;
+    box-shadow: 2px 2px #ccc;
+}
+
+.dropdown-isShow {
+    display: block;
+}
+
+.dropdown-item {
+    line-height: 30px;
+    width: 100px;
+    border-bottom: 1px solid #ccc;
+    ;
+    text-align: center;
+    user-select: none;
+    cursor: pointer;
+
+}
 
 </style>

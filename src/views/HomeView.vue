@@ -2,8 +2,20 @@
 import { ref, provide, nextTick} from 'vue'
 import EditHeader from '@/packages/layout/header.vue';
 import LeftComponents from '@/packages/layout/leftComponents/index.vue';
+import LayerSet from '@/packages/layout/layer/index.vue';
 import RightProps from '@/packages/layout/rightProps/index.vue';
 import BigScreenEdit from '@/packages/bigScreenEdit.vue';
+import { registerConfig } from '../packages/config/leftComponents';
+import { REGISTERCONFIG, COMMAND } from '../packages/config/provideInjectKey'
+import { usebigScreenStore } from '../packages/data/bigScreenGlobalStore'
+import { useCommand } from '../packages/hooks/useCommand'
+
+const bigScreenStore = usebigScreenStore();
+const { commands } = useCommand(bigScreenStore);
+// 将组件配置信息传递下去
+provide(REGISTERCONFIG, registerConfig)
+// 将 command 指令传递下去
+provide(COMMAND, commands)
 
 
 
@@ -18,12 +30,15 @@ import BigScreenEdit from '@/packages/bigScreenEdit.vue';
       <div class="edit-page-content-left">
         <LeftComponents />
       </div>
+      <div class="edit-page-content-layer">
+        <LayerSet/>
+      </div>
       <div class="edit-page-content-center">
         <BigScreenEdit/>
       </div>
-      <div class="edit-page-content-right">
+      <!-- <div class="edit-page-content-right">
         <RightProps />
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -45,6 +60,10 @@ import BigScreenEdit from '@/packages/bigScreenEdit.vue';
     &-left {
       width: 200px;
       background-color: bisque;
+    }
+    &-layer {
+      width: 200px;
+      background-color: aqua;
     }
     &-center {
       flex: 1;

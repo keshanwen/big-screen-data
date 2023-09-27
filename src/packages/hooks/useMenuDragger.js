@@ -1,6 +1,7 @@
 import { nextTick } from 'vue';
-import { cloneDeep } from '../utils/util';
+import { cloneDeep, createUuid } from '../utils/util';
 
+let zIndex = 0
 export function useMenuDragger(bigScreenStore) {
   let currentComponent = null;
   const dragenter = (e) => {
@@ -19,10 +20,10 @@ export function useMenuDragger(bigScreenStore) {
     const temporaryValue = cloneDeep([
       ...blocks,
       {
-        uuid: blocks.length ? blocks[blocks.length - 1].uuid + 1 : 0,
+        uuid: createUuid(),
         top: e.offsetY,
         left: e.offsetX,
-        zIndex: 1,
+        zIndex: zIndex++,
         key: currentComponent.key,
         width: currentComponent.width,
         height: currentComponent.height,

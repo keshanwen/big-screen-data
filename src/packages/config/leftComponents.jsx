@@ -18,8 +18,11 @@ function createEditorConfig() {
   };
 }
 
+
 export let registerConfig = createEditorConfig();
 
+
+/* 这里初始化的时候一定要给 width height, 这样可以省事很多。不要在后面频繁的去 获取 dom, 而且异步组件不一定什么时候才生成 dom. */
 registerConfig.register({
   label: '文本',
   preview: '预览文本icon',

@@ -21,10 +21,11 @@
             v-for="block in bigScreenStore.state.blocks"
             :key="block.uuid"
           >
-            <EditorBlock :block="block" :mousedownFn="mousedown" />
+            <EditorBlockGroup v-if="block.group" :block="block" :mousedownFn="mousedown" />
+            <EditorBlock v-else :block="block" :mousedownFn="mousedown" />
           </template>
           <!-- 辅助线 -->
-          <GuideLines :markLine="markLine"/>
+          <GuideLines :markLine="markLine" />
         </div>
       </div>
     </div>
@@ -47,8 +48,9 @@ import { usebigScreenStore } from './data/bigScreenGlobalStore';
 import { useSketchRule } from './hooks/useSketchRule';
 import { useFocus } from './hooks/useFocus';
 import { useBlockDragger } from './hooks/useBlockDragger';
-import EditorBlock from './layout/editorBlock.vue';
+import EditorBlock from './layout/block/editorBlock.vue';
 import GuideLines from './layout/guideLines.vue';
+import EditorBlockGroup from './layout/block/editorBlockGroup.vue'
 
 let sketchRuleRef = ref();
 let wrapper = ref();
@@ -60,8 +62,6 @@ const { containerMousedown } = useFocus(bigScreenStore);
 const { handleScroll: handleScrollSketRule, handleWheel: handleWheelSketRule } =
   useSketchRule();
 let { mousedown, markLine } = useBlockDragger(bigScreenStore);
-
-
 
 const canvasStyle = computed(() => {
   return {

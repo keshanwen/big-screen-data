@@ -11,11 +11,38 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
       scale: 1
     })
 
+
+/*
+  blocks: [
+      { top: 100, left: 100, zIndex: 1, key: 'text', uuid: 0 },
+      { top: 200, left: 200, zIndex: 2, key: 'button', uuid: 1 },
+      { top: 300, left: 300, zIndex: 3, key: 'bar', uuid: 2 },
+      {
+        top: 400, left: 100, zIndex: 6, uuid: 5,group: true ,groupName: '分组1',children: [
+          { top: 400, left: 400, zIndex: 4, key: 'text', uuid: 3 },
+          { top: 500, left: 500, zIndex: 5, key: 'button', uuid: 4 },
+          {
+            top: 400, left: 100, zIndex: 7, uuid: 6, group: true, groupName: '分组2',
+            children: [
+               { top: 400, left: 400, zIndex: 9, key: 'text', uuid: 7 },
+              { top: 500, left: 500, zIndex: 10, key: 'button', uuid: 8 },
+            ]
+          }
+      ]}, */
+
   // 画布上的组件
   let state = reactive({
     blocks: [
-      // { top: 100, left: 100, zIndex: 1, key: 'text', uuid: 0 },
-      // { top: 200, left: 200, zIndex: 1, key: 'button', uuid: 1 },
+      // { top: 500, left: 100, zIndex: 1, key: 'text', uuid: 0 },
+      // { top: 500, left: 500, zIndex: 2, key: 'button', uuid: 1 },
+      // { top: 300, left: 300, zIndex: 3, key: 'bar', uuid: 2 },
+      // {
+      //   top: 400, left: 100, zIndex: 6, uuid: 5, group: true, groupName: '分组1', focus: true,
+      //   children: [
+      //     { top: 400, left: 400, zIndex: 4, key: 'text', uuid: 3, width: 90, height:24 },
+      //     { top: 200, left: 200, zIndex: 5, key: 'button', uuid: 4, width: 116, height: 32 },
+      // ]},
+
     ],
     selectIndex: -1, // 表示没有任何一个被选中
   });
