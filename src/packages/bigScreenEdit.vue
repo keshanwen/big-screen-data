@@ -17,13 +17,16 @@
           id="editor-container-canvas__content"
           class="editor-container-canvas__content"
         >
-          <template
+          <div
             v-for="block in bigScreenStore.state.blocks"
             :key="block.uuid"
+            @mousedown="e => blockMousedown(e,block)"
+            @contextmenu="(e) => onContextMenuBlock(e, block)"
+            class="all-block-wrap"
           >
             <EditorBlockGroup v-if="block.group" :block="block" :mousedownFn="mousedown" />
             <EditorBlock v-else :block="block" :mousedownFn="mousedown" />
-          </template>
+          </div>
           <!-- 辅助线 -->
           <GuideLines :markLine="markLine" />
         </div>
@@ -32,7 +35,7 @@
   </div>
 </template>
 
-<script setup>
+<script setup lang="tsx">
 import {
   ref,
   shallowRef,
@@ -42,6 +45,7 @@ import {
   reactive,
   watch,
   nextTick,
+  inject,
 } from 'vue';
 import SketchRule from './layout/sketchRule.vue';
 import { usebigScreenStore } from './data/bigScreenGlobalStore';
@@ -51,6 +55,10 @@ import { useBlockDragger } from './hooks/useBlockDragger';
 import EditorBlock from './layout/block/editorBlock.vue';
 import GuideLines from './layout/guideLines.vue';
 import EditorBlockGroup from './layout/block/editorBlockGroup.vue'
+import { $dropdown, DropdownItem } from './layout/dialog/dropdown.jsx'
+import { COMMAND } from './config/provideInjectKey'
+
+const command = inject(COMMAND) as any
 
 let sketchRuleRef = ref();
 let wrapper = ref();
@@ -58,7 +66,10 @@ let screenRef = ref();
 let canvasRef = ref();
 
 const bigScreenStore = usebigScreenStore();
-const { containerMousedown } = useFocus(bigScreenStore);
+const { containerMousedown, blockMousedown } = useFocus(bigScreenStore, (e) => {
+  // 获取焦点后进行拖拽
+  mousedown(e)
+});
 const { handleScroll: handleScrollSketRule, handleWheel: handleWheelSketRule } =
   useSketchRule();
 let { mousedown, markLine } = useBlockDragger(bigScreenStore);
@@ -86,6 +97,25 @@ const handleScroll = () => {
 // 控制缩放值
 const handleWheel = (e) => {
   handleWheelSketRule(e, bigScreenStore, handleScroll);
+};
+
+const onContextMenuBlock = (e, block) => {
+  e.preventDefault();
+
+  $dropdown({
+    el: e.target, // 以哪个元素为准产生一个dropdown
+    content: () => {
+      return (
+        <>
+          <DropdownItem
+            label="创建分组"
+            icon="icon-group"
+            onClick={() => command.group()}
+          ></DropdownItem>
+        </>
+      );
+    },
+  });
 };
 
 const init = () => {
@@ -125,6 +155,10 @@ onMounted(() => {
         transform-origin: 0;
       }
     }
+  }
+
+  .all-block-wrap {
+    cursor: move;
   }
 }
 </style>

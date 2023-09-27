@@ -12,9 +12,8 @@
     </div>
 </template>
 <script setup>
-import { ref, computed ,onMounted, nextTick } from 'vue'
-import EditorBlock from './editorBlock.vue'
-// import { useCalculateEditorBlockGroup } from '../../hooks/useGroup'
+import { ref, computed, onMounted, nextTick } from 'vue';
+import EditorBlock from './editorBlock.vue';
 
 defineOptions({
   name: 'EditorBlockGroup',
@@ -33,8 +32,6 @@ const props = defineProps({
 
 
 const blockGroupStyles = computed(() => {
-  // const { zIndex, left, top, width, height } = useCalculateEditorBlockGroup(props.block)
-
   return {
     top: `${props.block.top}px`,
     left: `${props.block.left}px`,
@@ -45,8 +42,6 @@ const blockGroupStyles = computed(() => {
 });
 
 let blockGroupRef = ref()
-
-
 
 
 

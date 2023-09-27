@@ -1,8 +1,6 @@
 <template>
   <div
     ref="blockRef"
-    @mousedown="(e) => blockMousedown(e, props.block)"
-    @contextmenu="(e) => onContextMenuBlock(e, props.block)"
     :style="blockStyles"
     :class="[
       props.block.focus ? 'editor-block-home-focus' : '',
@@ -83,25 +81,6 @@ function getComponent() {
   const RenderComponent = component.render;
   return RenderComponent;
 }
-
-const onContextMenuBlock = (e, block) => {
-  e.preventDefault();
-
-  $dropdown({
-    el: e.target, // 以哪个元素为准产生一个dropdown
-    content: () => {
-      return (
-        <>
-          <DropdownItem
-            label="创建分组"
-            icon="icon-group"
-            onClick={() => command.group()}
-          ></DropdownItem>
-        </>
-      );
-    },
-  });
-};
 </script>
 
 <style lang="scss" scoped>
