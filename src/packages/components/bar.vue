@@ -1,13 +1,26 @@
 <template>
-    <div ref="echartBarRef" class='echart-bar-home'>
+    <div :style="Styles" ref="echartBarRef" class='echart-bar-home'>
 
     </div>
 </template>
-<script setup lang='ts'>
-import { ref, onMounted } from 'vue'
+<script setup>
+import { ref, onMounted, computed } from 'vue'
 import * as echarts from 'echarts';
 
+
+const props = defineProps({
+  props: {
+    type: Object
+  }
+})
+
 let echartBarRef = ref()
+
+const Styles = computed(() => ({
+  width: `${props.props.width}px`,
+  height: `${props.props.height}px`,
+}));
+
 
 const init = () => {
 
@@ -35,7 +48,6 @@ myChart.setOption({
 
 onMounted(() => {
   init()
-  console.log('my bar')
 })
 
 </script>

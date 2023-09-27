@@ -8,7 +8,7 @@
       'editor-block-home',
     ]"
   >
-    <component ref="componentRef" :is="getComponent()" />
+    <component ref="componentRef" :is="getComponent()" :props="props.block"/>
   </div>
 </template>
 <script setup>
@@ -34,15 +34,15 @@ let componentRef = ref(null)
 // 监听动态组件生成
 watch(componentRef, (newVal, oldVal) => {
   if (newVal) {
-    let { offsetWidth, offsetHeight } = blockRef.value;
-    if (props.block.alignCenter) {
-      // 说明是拖拽松手的时候才渲染的，其他的默认渲染到页面上的内容不需要居中
-      props.block.left = props.block.left - offsetWidth / 2;
-      props.block.top = props.block.top - offsetHeight / 2; // 原则上重新派发事件
-      props.block.alignCenter = false; // 让渲染后的结果才能去居中
-    }
-    props.block.width = offsetWidth;
-    props.block.height = offsetHeight;
+    // let { offsetWidth, offsetHeight } = blockRef.value;
+    // if (props.block.alignCenter) {
+    //   // 说明是拖拽松手的时候才渲染的，其他的默认渲染到页面上的内容不需要居中
+    //   props.block.left = props.block.left - offsetWidth / 2;
+    //   props.block.top = props.block.top - offsetHeight / 2; // 原则上重新派发事件
+    //   props.block.alignCenter = false; // 让渲染后的结果才能去居中
+    // }
+    // props.block.width = offsetWidth;
+    // props.block.height = offsetHeight;
   }
 }, {
   deep: true,
@@ -63,6 +63,8 @@ const blockStyles = computed(() => ({
   top: `${props.block.top}px`,
   left: `${props.block.left}px`,
   zIndex: `${props.block.zIndex}`,
+  width: `${props.block.width}px`,
+  height: `${props.block.height}px`,
 }));
 
 function getComponent() {

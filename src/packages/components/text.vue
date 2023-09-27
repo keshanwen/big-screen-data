@@ -1,9 +1,21 @@
 <template>
-    <div class='home'>
+    <div :style="Styles" class='home'>
       我是文本组件
     </div>
 </template>
-<script setup lang='ts'>
+<script setup>
+import { onMounted, computed } from 'vue'
+
+const props = defineProps({
+  props: {
+    type: Object
+  }
+})
+
+const Styles = computed(() => ({
+  width: `${props.props.width}px`,
+  height: `${props.props.height}px`,
+}));
 
 </script>
 

@@ -1,14 +1,23 @@
 <template>
-    <div class='home'>
+    <div :style="Styles" class='home'>
       <ElButton>我是按钮组件</ElButton>
     </div>
 </template>
-<script setup lang='ts'>
-import { onMounted } from 'vue'
+<script setup>
+import { onMounted, computed } from 'vue'
 
-onMounted(() => {
-  console.log('i am button~~~~')
+
+const props = defineProps({
+  props: {
+    type: Object
+  }
 })
+
+const Styles = computed(() => ({
+  width: `${props.props.width}px`,
+  height: `${props.props.height}px`,
+}));
+
 </script>
 
 

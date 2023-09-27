@@ -24,6 +24,8 @@ export function useMenuDragger(bigScreenStore) {
         left: e.offsetX,
         zIndex: 1,
         key: currentComponent.key,
+        width: currentComponent.width,
+        height: currentComponent.height,
         alignCenter: true, // 希望松手的时候你可以居中
       },
     ]);
