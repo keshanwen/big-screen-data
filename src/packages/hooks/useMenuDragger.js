@@ -1,7 +1,6 @@
 import { nextTick } from 'vue';
-import { cloneDeep, createUuid } from '../utils/util';
+import { cloneDeep,createUuid ,createZIndex } from '../utils/util';
 
-let zIndex = 0
 export function useMenuDragger(bigScreenStore) {
   let currentComponent = null;
   const dragenter = (e) => {
@@ -23,7 +22,7 @@ export function useMenuDragger(bigScreenStore) {
         uuid: createUuid(),
         top: e.offsetY,
         left: e.offsetX,
-        zIndex: zIndex++,
+        zIndex: createZIndex(),
         key: currentComponent.key,
         width: currentComponent.width,
         height: currentComponent.height,

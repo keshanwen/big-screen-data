@@ -1,4 +1,4 @@
-import { createUuid } from '../utils/util'
+import { createUuid, createZIndex } from '../utils/util'
 
 function updateChildrenPosition(left, top, children) {
   // 因为此时成组了。组先元素是 position: absolute. 那么其子元素现在定位是相对于，组的根节点，但是实际上为了其子节点的位置不变， 所以要减去差值
@@ -79,7 +79,7 @@ export const useCalculateEditorBlockGroup = (blocks) => {
 
   return {
     uuid: createUuid(),
-    zIndex: zIndex + 1, // zIndex 取当前的最大值，而不是子元素的最大值
+    zIndex: createZIndex(), // zIndex 取当前的最大值，而不是子元素的最大值
     left: minX,
     top: minY,
     width: maxX - minX,
