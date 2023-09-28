@@ -57,6 +57,7 @@ import GuideLines from './layout/guideLines.vue';
 import EditorBlockGroup from './layout/block/editorBlockGroup.vue'
 import { $dropdown, DropdownItem } from './layout/dialog/dropdown.jsx'
 import { COMMAND } from './config/provideInjectKey'
+import { useContextMenu } from './hooks/useContextMenu.jsx'
 
 const command = inject(COMMAND) as any
 
@@ -101,20 +102,24 @@ const handleWheel = (e) => {
 
 const onContextMenuBlock = (e, block) => {
   e.preventDefault();
+  const showConent: any = useContextMenu(bigScreenStore, command)
+
+  function content() {
+    return showConent.map(item => {
+      return (
+        <DropdownItem
+          key={ item.label }
+          label={ item.label }
+          icon={ item.icon }
+          onClick={item.onClick}
+           ></DropdownItem>
+      )
+    })
+  }
 
   $dropdown({
     el: e.target, // 以哪个元素为准产生一个dropdown
-    content: () => {
-      return (
-        <>
-          <DropdownItem
-            label="创建分组"
-            icon="icon-group"
-            onClick={() => command.group()}
-          ></DropdownItem>
-        </>
-      );
-    },
+    content
   });
 };
 
