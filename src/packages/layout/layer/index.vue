@@ -4,7 +4,7 @@
     <div
       v-for="block in blocks"
       :key="block.uuid"
-      :class="[block.focus ? 'lay-item-block-focus' : '', 'layer-item']"
+      class="layer-item"
       @mousedown="(e) => blockMousedown(e, block)"
     >
       <template v-if="block.group">
@@ -53,9 +53,7 @@ const blocks = computed(() => {
     // margin-bottom: 4px;
     // cursor: pointer;
   }
-
-  .lay-item-block-focus {
-    border: 2px dashed red;
-  }
 }
+
+
 </style>

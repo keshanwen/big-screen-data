@@ -1,6 +1,6 @@
 <template>
   <div class="combine-home">
-    <div class="combine-title" @click="isShowMore">
+    <div :class="[props.block.focus ? 'lay-item-block-focus' : '', 'combine-title']"  @click="isShowMore">
       <el-icon><Folder /></el-icon>{{ props.block.groupName }}
     </div>
     <div v-if="isShowMoreLayer">
@@ -48,12 +48,16 @@ const isShowMore = () => {
     margin-bottom: 4px;
     cursor: pointer;
   }
-  .single-layer-son {
-    height: 60px;
-    background-color: darkgray;
-    margin-bottom: 4px;
-    cursor: pointer;
+.single-layer-son {
+  height: 60px;
+  background-color: darkgray;
+  margin-bottom: 4px;
+  cursor: pointer;
 
-  }
 }
+}
+
+ .lay-item-block-focus {
+    border: 2px dashed red;
+  }
 </style>

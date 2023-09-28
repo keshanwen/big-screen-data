@@ -1,5 +1,5 @@
 <template>
-    <div class='single-home'>
+    <div :class="[props.block.focus ? 'lay-item-block-focus' : '', 'single-home']">
        {{ getPreviewLable(props.block) }}
     </div>
 </template>
@@ -31,4 +31,7 @@ function getPreviewLable(block) {
   margin-bottom: 4px;
   cursor: pointer;
 }
+  .lay-item-block-focus {
+    border: 2px dashed red;
+  }
 </style>
