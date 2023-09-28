@@ -22,11 +22,11 @@ export function useContextMenu(bigScreenStore, command) {
       { label: '上移', icon: 'icon', onClick: () => { console.log('上移') } },
       { label: '下移', icon: 'icon', onClick: () => { console.log('下移') } },
       { label: '清空剪贴板', icon: 'icon', onClick: () => { console.log('清空剪贴板') } },
-      { label: '删除', icon: 'icon', onClick: () => { console.log('删除') }},
+      { label: '删除', icon: 'icon', onClick: () => { command.delete() }},
     ]
     if (lastSelectBlock.group) {
       commonContent.unshift(
-        { label: '解除分组', icon: 'icon', onClick: () => { console.log('解除分组') } }
+        { label: '解除分组', icon: 'icon', onClick: () => { command.removeGroup() } }
      )
     }
     return commonContent
@@ -43,7 +43,7 @@ export function useContextMenu(bigScreenStore, command) {
       {
         label: '删除',
         icon: 'icon-group',
-       onClick: () => console.log('删除')
+       onClick: () => command.delete()
       },
     ]
   }

@@ -1,10 +1,16 @@
-import { createUuid, createZIndex } from '../utils/util'
+import { createUuid, createZIndex,cloneDeep } from '../utils/util'
 
-function updateChildrenPosition(left, top, children) {
+function updateChildrenPosition(left, top, children, type = 'group') {
   // 因为此时成组了。组先元素是 position: absolute. 那么其子元素现在定位是相对于，组的根节点，但是实际上为了其子节点的位置不变， 所以要减去差值
   children.forEach(item => {
-    item.left = item.left - left
-    item.top = item.top - top
+    if (type === 'group') {
+      item.left = item.left - left
+      item.top = item.top - top
+    } else {
+      item.left = item.left + left
+      item.top = item.top + top
+    }
+
     item.focus = false
   })
 }
@@ -50,9 +56,6 @@ export const useCalculateEditorBlockGroup = (blocks) => {
   let maxX = -Infinity
   let maxY = -Infinity
 
-
-
-
   blocks.forEach(item => {
     const { zIndex: itemZIndex, left, top, width, height } = item
     const blcokMaxX = left + width
@@ -89,3 +92,9 @@ export const useCalculateEditorBlockGroup = (blocks) => {
     focus: true
   };
 };
+
+export const useRemoveBlockGroup = (lastSelectBlock) => {
+  const { left, top } = lastSelectBlock;
+  updateChildrenPosition(left, top, lastSelectBlock.children, 'reduce')
+  return lastSelectBlock.children
+}

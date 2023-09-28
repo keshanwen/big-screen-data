@@ -2,7 +2,7 @@ import { onUnmounted } from 'vue';
 import { cloneDeep } from '../utils/util';
 import { events } from '../utils/events';
 import { START, END } from '../config/eventName';
-import { useCalculateEditorBlockGroup } from './useGroup'
+import { useCalculateEditorBlockGroup, useRemoveBlockGroup } from './useGroup'
 
 export  function useCommand(bigScreenStore) {
   const state = {
@@ -39,6 +39,7 @@ export  function useCommand(bigScreenStore) {
   };
 
   // 注册我们需要的指令
+  /* 删除 */
   registry({
     name: 'delete', // 删除
     pushQueue: true,
@@ -58,7 +59,7 @@ export  function useCommand(bigScreenStore) {
     },
   });
 
-  // 分组
+  /* 分组 */
   registry({
     name: 'group', // 分组
     pushQueue: true,
@@ -71,6 +72,27 @@ export  function useCommand(bigScreenStore) {
           let newBlock = useCalculateEditorBlockGroup(focusData)
           newBlock.children = focusData
           let newBlocks = cloneDeep([newBlock, ...unfocused])
+          bigScreenStore.updateBigScreenState('blocks', newBlocks)
+        },
+        undo: () => {
+          bigScreenStore.updateBigScreenState('blocks', befrorState)
+        }
+      }
+    }
+  })
+
+  /* 解除分组 */
+  registry({
+    name: 'removeGroup',
+    pushQueue: true,
+    execute() {
+      let befrorState = cloneDeep(bigScreenStore.state.blocks)
+      return {
+        redo: () => {
+          let lastSelectBlock = bigScreenStore.lastSelectBlock
+          let unfocused = bigScreenStore.focusData.unfocused
+          let childrens = useRemoveBlockGroup(lastSelectBlock)
+          let newBlocks = cloneDeep([...childrens, ...unfocused])
           bigScreenStore.updateBigScreenState('blocks', newBlocks)
         },
         undo: () => {
