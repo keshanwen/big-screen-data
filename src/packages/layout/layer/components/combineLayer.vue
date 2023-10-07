@@ -1,6 +1,15 @@
 <template>
   <div class="combine-home">
-    <div :class="[props.block.focus ? 'lay-item-block-focus' : '', 'combine-title']"  @click="isShowMore">
+    <div
+      :class="[
+        props.block.focus ? 'lay-item-block-focus' : '',
+        'combine-title',
+      ]"
+      @click="isShowMore"
+      @mousedown="(e) => blockMousedown(e, props.block)"
+    >
+      <el-icon  v-if="!isShowMoreLayer"><ArrowRightBold /></el-icon>
+      <el-icon v-else><ArrowDownBold /></el-icon>
       <el-icon><Folder /></el-icon>{{ props.block.groupName }}
     </div>
     <div v-if="isShowMoreLayer">
@@ -9,22 +18,31 @@
           v-if="item.children && item.children.length"
           :block="item"
         />
-        <SingleLayer v-else :block="item" class="single-layer-son"/>
+        <SingleLayer
+          v-else
+          :block="item"
+          class="single-layer-son"
+        />
       </template>
     </div>
   </div>
 </template>
 <script setup>
 import { onMounted, ref, inject } from 'vue';
-import { Folder } from '@element-plus/icons-vue';
+import { Folder, ArrowRightBold,ArrowDownBold } from '@element-plus/icons-vue';
 import SingleLayer from './SingleLayer.vue';
-import { REGISTERCONFIG } from '../../../config/provideInjectKey'
+import { REGISTERCONFIG } from '../../../config/provideInjectKey';
+import { useFocus } from '../../../hooks/useFocus';
+import { usebigScreenStore } from '../../../data/bigScreenGlobalStore';
+
+const bigScreenStore = usebigScreenStore();
+const { blockMousedown } = useFocus(bigScreenStore);
 
 defineOptions({
   name: 'CombineLayer',
 });
 
-const registerConfig = inject(REGISTERCONFIG)
+const registerConfig = inject(REGISTERCONFIG);
 
 const props = defineProps({
   block: {
@@ -35,9 +53,8 @@ const props = defineProps({
 let isShowMoreLayer = ref(false);
 
 const isShowMore = () => {
-  isShowMoreLayer.value = !isShowMoreLayer.value
-}
-
+  isShowMoreLayer.value = !isShowMoreLayer.value;
+};
 </script>
 
 <style lang="scss" scoped>
@@ -48,16 +65,15 @@ const isShowMore = () => {
     margin-bottom: 4px;
     cursor: pointer;
   }
-.single-layer-son {
-  height: 60px;
-  background-color: darkgray;
-  margin-bottom: 4px;
-  cursor: pointer;
-
-}
-}
-
- .lay-item-block-focus {
-    border: 2px dashed red;
+  .single-layer-son {
+    height: 60px;
+    background-color: darkgray;
+    margin-bottom: 4px;
+    cursor: pointer;
   }
+}
+
+.lay-item-block-focus {
+  border: 2px dashed red;
+}
 </style>

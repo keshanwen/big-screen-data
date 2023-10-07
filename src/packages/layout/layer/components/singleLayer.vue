@@ -1,13 +1,18 @@
 <template>
-    <div :class="[props.block.focus ? 'lay-item-block-focus' : '', 'single-home']">
+    <div :class="[props.block.focus ? 'lay-item-block-focus' : '', 'single-home']" @mousedown="(e) => blockMousedown(e, block)">
        {{ getPreviewLable(props.block) }}
     </div>
 </template>
 <script setup>
-import { inject } from 'vue'
+import { inject,onMounted } from 'vue'
 import { REGISTERCONFIG } from '../../../config/provideInjectKey'
+import { useFocus } from '../../../hooks/useFocus';
+import { usebigScreenStore } from '../../../data/bigScreenGlobalStore';
 
 const registerConfig = inject(REGISTERCONFIG)
+
+const bigScreenStore = usebigScreenStore();
+const { blockMousedown } = useFocus(bigScreenStore);
 
 const props = defineProps({
   block: {
@@ -21,6 +26,10 @@ function getPreviewLable(block) {
   return registerConfig.componentMap[key].preview;
 }
 
+
+onMounted(() => {
+  console.log('singleLayer......page')
+})
 </script>
 
 

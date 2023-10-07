@@ -1,3 +1,9 @@
+
+function updateParentState() {
+
+}
+
+
 export function useFocus(bigScreenStore, callback) {
 
   const containerMousedown = () => {
@@ -8,6 +14,19 @@ export function useFocus(bigScreenStore, callback) {
   const blockMousedown = (e, block) => {
     e.preventDefault();
     e.stopPropagation();
+    let isNoLeve = false
+    /* 只能聚焦同级节点 */
+    if (block.parent?.length) {
+      isNoLeve = bigScreenStore.focusData.focus.some(item => item.parent?.join() !== block.parent.join())
+    } else {
+      // 点的是最外层的节点
+      isNoLeve = bigScreenStore.focusData.focus.some(item => item.parent?.length)
+    }
+    if (isNoLeve) {
+      bigScreenStore.clearBlockFocus()
+      block.focus = true
+    }
+    console.log(isNoLeve, 'isNoLeve~~~~')
     // block上我们规划一个属性 focus 获取焦点后就将focus变为true
     if (e.shiftKey) {
       if (bigScreenStore.focusData.focus.length <= 1) {

@@ -1,18 +1,20 @@
-import { createUuid, createZIndex,cloneDeep } from '../utils/util'
+import { createUuid, createZIndex, cloneDeep } from '../utils/util';
 
-function updateChildrenPosition(left, top, children, type = 'group') {
+function updateChildrenPosition(left, top, children, parent) {
   // 因为此时成组了。组先元素是 position: absolute. 那么其子元素现在定位是相对于，组的根节点，但是实际上为了其子节点的位置不变， 所以要减去差值
-  children.forEach(item => {
-    if (type === 'group') {
-      item.left = item.left - left
-      item.top = item.top - top
+  children.forEach((item) => {
+    if (parent) {
+      item.left = item.left + left;
+      item.top = item.top + top;
+      // 要改变 parent 的指向
+      item.parent = parent;
     } else {
-      item.left = item.left + left
-      item.top = item.top + top
+      item.left = item.left - left;
+      item.top = item.top - top;
     }
 
-    item.focus = false
-  })
+    item.focus = false;
+  });
 }
 
 export const useCalculateEditorBlockGroup = (blocks) => {
@@ -50,35 +52,34 @@ export const useCalculateEditorBlockGroup = (blocks) => {
 
    后期初始化的时候 将每个组件的 width height 写死，这样将不用去获取每个组件的 width heigh。 编辑的时候在获取位置信息时候，可能会有不同步的问题
   */
-  let zIndex = -Infinity
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
+  let zIndex = -Infinity;
+  let minX = Infinity;
+  let minY = Infinity;
+  let maxX = -Infinity;
+  let maxY = -Infinity;
 
-  blocks.forEach(item => {
-    const { zIndex: itemZIndex, left, top, width, height } = item
-    const blcokMaxX = left + width
-    const blockMaxY = top + height
+  blocks.forEach((item) => {
+    const { zIndex: itemZIndex, left, top, width, height } = item;
+    const blcokMaxX = left + width;
+    const blockMaxY = top + height;
     if (itemZIndex > zIndex) {
-      zIndex = itemZIndex
+      zIndex = itemZIndex;
     }
     if (left < minX) {
-      minX = left
+      minX = left;
     }
     if (top < minY) {
-      minY = top
+      minY = top;
     }
     if (blcokMaxX > maxX) {
-      maxX = blcokMaxX
+      maxX = blcokMaxX;
     }
     if (blockMaxY > maxY) {
-      maxY = blockMaxY
+      maxY = blockMaxY;
     }
   });
 
-
-  updateChildrenPosition(minX, minY, blocks)
+  updateChildrenPosition(minX, minY, blocks);
 
   return {
     uuid: createUuid(),
@@ -89,12 +90,15 @@ export const useCalculateEditorBlockGroup = (blocks) => {
     height: maxY - minY,
     group: true,
     groupName: '分组',
-    focus: true
+    focus: true,
   };
 };
 
 export const useRemoveBlockGroup = (lastSelectBlock) => {
-  const { left, top } = lastSelectBlock;
-  updateChildrenPosition(left, top, lastSelectBlock.children, 'reduce')
-  return lastSelectBlock.children
-}
+  const { left, top, parent } = lastSelectBlock;
+  if (parent) {
+    parent = cloneDeep(parent);
+  }
+  updateChildrenPosition(left, top, lastSelectBlock.children, parent);
+  return lastSelectBlock.children;
+};

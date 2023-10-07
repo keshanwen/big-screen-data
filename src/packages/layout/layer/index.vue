@@ -4,8 +4,8 @@
     <div
       v-for="block in blocks"
       :key="block.uuid"
+      @contextmenu="(e) => onContextMenuBlock(e, block)"
       class="layer-item"
-      @mousedown="(e) => blockMousedown(e, block)"
     >
       <template v-if="block.group">
         <CombineLayer :block="block"/>
@@ -16,15 +16,18 @@
     </div>
   </div>
 </template>
-<script setup>
-import { computed, onMounted } from 'vue';
+<script setup lang="tsx">
+import { computed, inject ,onMounted } from 'vue';
 import { usebigScreenStore } from '../../data/bigScreenGlobalStore';
-import { useFocus } from '../../hooks/useFocus';
 import CombineLayer from './components/combineLayer.vue'
 import SingleLayer from './components/singleLayer.vue'
+import { $dropdown, DropdownItem } from '../dialog/dropdown.jsx'
+import { COMMAND } from '../../config/provideInjectKey'
+import { useContextMenu } from '../../hooks/useContextMenu.jsx'
 
+
+const command = inject(COMMAND) as any
 const bigScreenStore = usebigScreenStore();
-const { blockMousedown } = useFocus(bigScreenStore);
 
 const blocks = computed(() => {
   return bigScreenStore.state.blocks.sort((a, b) => {
@@ -32,6 +35,29 @@ const blocks = computed(() => {
   });
 });
 
+
+const onContextMenuBlock = (e, block) => {
+   e.preventDefault();
+  const showConent: any = useContextMenu(bigScreenStore, command)
+
+  function content() {
+    return showConent.map(item => {
+      return (
+        <DropdownItem
+          key={ item.label }
+          label={ item.label }
+          icon={ item.icon }
+          onClick={item.onClick}
+           ></DropdownItem>
+      )
+    })
+  }
+
+  $dropdown({
+    el: e.target, // 以哪个元素为准产生一个dropdown
+    content
+  });
+}
 
 </script>
 

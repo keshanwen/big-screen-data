@@ -49,25 +49,55 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
 
   // 失焦，和未失焦的block
   const focusData = computed(() => {
-      let focus = [];
-      let unfocused = [];
-      state.blocks.forEach(block => (block.focus ? focus : unfocused).push(block));
-      return { focus, unfocused }
+    let obj = {
+      focus: [],
+      unfocused: []
+    }
+    function getValue(block) {
+      if (block.focus) {
+        obj.focus.push(block)
+      } else {
+        obj.unfocused.push(block)
+      }
+      block?.children?.length && block.children.forEach(item => {
+        getValue(item)
+      })
+    }
+    state.blocks.forEach(block => getValue(block))
+    return obj
   });
 
     // 最后选择的那一个
   // const lastSelectBlock = computed(()=>state.blocks[state.selectIndex])
   const lastSelectBlock = computed(() => {
-    return state.blocks.find((item) => {
-      return item.uuid == state.selectIndex
-    })
+    let lasteBlock
+    function getValue(obj) {
+      if (obj.uuid === state.selectIndex) {
+        lasteBlock = obj
+        return
+      }
+      if (obj.children?.length) {
+        obj.children.forEach(item => getValue(item))
+      }
+    }
+
+    state.blocks.forEach( block => getValue(block))
+
+    return lasteBlock
   })
 
 
   // 让所有block 失去焦点
-   const clearBlockFocus = () => {
-        state.blocks.forEach(block => block.focus = false);
+  const clearBlockFocus = () => {
+    function clearBlock(obj) {
+      obj.focus = false
+      obj.children?.length && obj.children.forEach(item => {
+        clearBlock(item)
+      })
     }
+
+    state.blocks.forEach(block =>  clearBlock(block));
+  }
 
   // 更新画布相关的信息
   const updateCanvasContaniter = (obj) => {

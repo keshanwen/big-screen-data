@@ -2,9 +2,9 @@ import { onUnmounted } from 'vue';
 import { cloneDeep } from '../utils/util';
 import { events } from '../utils/events';
 import { START, END } from '../config/eventName';
-import { useCalculateEditorBlockGroup, useRemoveBlockGroup } from './useGroup'
+import { useCalculateEditorBlockGroup, useRemoveBlockGroup } from './useGroup';
 
-export  function useCommand(bigScreenStore) {
+export function useCommand(bigScreenStore) {
   const state = {
     // 前进后退需要指针
     current: -1, // 前进后退的索引值
@@ -50,10 +50,10 @@ export  function useCommand(bigScreenStore) {
       };
       return {
         redo: () => {
-          bigScreenStore.updateBigScreenState('blocks', state.after)
+          bigScreenStore.updateBigScreenState('blocks', state.after);
         },
         undo: () => {
-          bigScreenStore.updateBigScreenState('blocks', state.before)
+          bigScreenStore.updateBigScreenState('blocks', state.before);
         },
       };
     },
@@ -64,43 +64,81 @@ export  function useCommand(bigScreenStore) {
     name: 'group', // 分组
     pushQueue: true,
     execute() {
-      let befrorState = cloneDeep(bigScreenStore.state.blocks)
+      let befrorState = cloneDeep(bigScreenStore.state.blocks);
       return {
         redo: () => {
-          let focusData = bigScreenStore.focusData.focus
-          let unfocused = bigScreenStore.focusData.unfocused
-          let newBlock = useCalculateEditorBlockGroup(focusData)
-          newBlock.children = focusData
-          let newBlocks = cloneDeep([newBlock, ...unfocused])
-          bigScreenStore.updateBigScreenState('blocks', newBlocks)
+          let focusData = bigScreenStore.focusData.focus;
+          let unfocused = bigScreenStore.focusData.unfocused;
+          let focusDataParent = focusData[0].parent;
+          let outerUnfocused = bigScreenStore.state.blocks.filter(
+            (item) => !item.focus
+          ); // 最外层没有获取焦点的数据
+
+          let newBlock = useCalculateEditorBlockGroup(focusData);
+          let parentBlock = cloneDeep(newBlock);
+
+          console.log(focusDataParent, 'focusDataParent~~~~');
+          newBlock.children = focusData;
+          // 给子节点添加 parent 属性,
+          // parent => '1,2,3,4,5' 将 uuid 组成一个 用逗号分割的字符串
+          newBlock.children.forEach((item) => {
+            const { uuid } = parentBlock;
+            if (!item.parent?.length) {
+              item.parent = [uuid];
+            } else {
+              item.parent.unshift(uuid);
+            }
+          });
+
+          // 如果没有parent，则说明是最外层
+          if (!focusDataParent?.length) {
+            // 这里不能简单的将 unfocused 的 数据进行，合并。因为 focusData中有儿子，肯定也没有focused, 所以重复了
+            let newBlocks = cloneDeep([newBlock, ...outerUnfocused]);
+            bigScreenStore.updateBigScreenState('blocks', newBlocks);
+          } else {
+            const blocks = cloneDeep(bigScreenStore.state.blocks)
+            let outerUnfocused = []
+            let outerFocused = {}
+            blocks.forEach(item => {
+              if (item.uuid === focusDataParent[0]) {
+               outerFocused = item
+              } else {
+                outerUnfocused.push(item)
+              }
+            })
+            // 对 outerFocused 操作
+            focusDataParent.reduce((aur,cur,index, arr) => {
+
+            },outerFocused)
+          }
         },
         undo: () => {
-          bigScreenStore.updateBigScreenState('blocks', befrorState)
-        }
-      }
-    }
-  })
+          bigScreenStore.updateBigScreenState('blocks', befrorState);
+        },
+      };
+    },
+  });
 
   /* 解除分组 */
   registry({
     name: 'removeGroup',
     pushQueue: true,
     execute() {
-      let befrorState = cloneDeep(bigScreenStore.state.blocks)
+      let befrorState = cloneDeep(bigScreenStore.state.blocks);
       return {
         redo: () => {
-          let lastSelectBlock = bigScreenStore.lastSelectBlock
-          let unfocused = bigScreenStore.focusData.unfocused
-          let childrens = useRemoveBlockGroup(lastSelectBlock)
-          let newBlocks = cloneDeep([...childrens, ...unfocused])
-          bigScreenStore.updateBigScreenState('blocks', newBlocks)
+          let lastSelectBlock = bigScreenStore.lastSelectBlock;
+          let unfocused = bigScreenStore.focusData.unfocused;
+          let childrens = useRemoveBlockGroup(lastSelectBlock);
+          let newBlocks = cloneDeep([...childrens, ...unfocused]);
+          bigScreenStore.updateBigScreenState('blocks', newBlocks);
         },
         undo: () => {
-          bigScreenStore.updateBigScreenState('blocks', befrorState)
-        }
-      }
-    }
-  })
+          bigScreenStore.updateBigScreenState('blocks', befrorState);
+        },
+      };
+    },
+  });
 
   onUnmounted(() => {
     // 清理绑定的事件
