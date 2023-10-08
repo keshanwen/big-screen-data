@@ -143,6 +143,7 @@ export function useCommand(bigScreenStore) {
               }
             }, blocks)
             bigScreenStore.updateBigScreenState('blocks', blocks);
+
           }
         },
         undo: () => {
@@ -160,11 +161,52 @@ export function useCommand(bigScreenStore) {
       let befrorState = cloneDeep(bigScreenStore.state.blocks);
       return {
         redo: () => {
-          let lastSelectBlock = bigScreenStore.lastSelectBlock;
-          let unfocused = bigScreenStore.focusData.unfocused;
-          let childrens = useRemoveBlockGroup(lastSelectBlock);
-          let newBlocks = cloneDeep([...childrens, ...unfocused]);
-          bigScreenStore.updateBigScreenState('blocks', newBlocks);
+          let lastSelectBlock = cloneDeep(bigScreenStore.lastSelectBlock);
+          let blocks = cloneDeep(bigScreenStore.state.blocks)
+          let { parent, uuid } = lastSelectBlock
+
+          function updateParentPoint(obj) {
+            let { parent } = obj
+            let index = parent.findIndex(item => item === uuid)
+            obj.parent.splice(index, 1)
+
+            obj.children?.forEach(item => updateParentPoint(item))
+          }
+
+          function updateChildren(obj) {
+            console.log(obj, 'obj~~~~~~')
+            const newChildren = useRemoveBlockGroup(lastSelectBlock) || []
+            // 改变 newChildren 的 parent 的指向
+            newChildren.forEach(jtem => {
+              updateParentPoint(jtem)
+            })
+            obj.children = obj.children.filter(item => item.uuid !== uuid)
+            obj.children = [...newChildren, ...obj.children]
+          }
+
+          if (parent?.length) {
+            parent.reduce((accumulator, currentValue, currentIndex, array) => {
+              let obj = accumulator.find(item => item.uuid === currentValue)
+              if (currentIndex === array.length - 1) {
+                updateChildren(obj)
+                return obj
+              } else {
+                return obj.children
+              }
+            }, blocks)
+            bigScreenStore.updateBigScreenState('blocks', blocks);
+          } else {
+            const newChildren = useRemoveBlockGroup(lastSelectBlock) || []
+            // 改变 newChildren 的 parent 的指向
+            newChildren.forEach(jtem => {
+              updateParentPoint(jtem)
+            })
+            blocks = blocks.filter(item => item.uuid !== uuid)
+            blocks = [...newChildren, ...blocks]
+            bigScreenStore.updateBigScreenState('blocks', blocks);
+          }
+          console.log(JSON.stringify(blocks, null, 2))
+          console.log(parent, 'parent~~~~')
         },
         undo: () => {
           bigScreenStore.updateBigScreenState('blocks', befrorState);

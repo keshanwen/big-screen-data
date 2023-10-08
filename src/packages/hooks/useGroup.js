@@ -7,7 +7,7 @@ function updateChildrenPosition(left, top, children, parent) {
       item.left = item.left + left;
       item.top = item.top + top;
       // 要改变 parent 的指向
-      item.parent = parent;
+      // item.parent = parent;
     } else {
       item.left = item.left - left;
       item.top = item.top - top;
@@ -95,10 +95,10 @@ export const useCalculateEditorBlockGroup = (blocks) => {
 };
 
 export const useRemoveBlockGroup = (lastSelectBlock) => {
-  const { left, top, parent } = lastSelectBlock;
-  if (parent) {
-    parent = cloneDeep(parent);
-  }
+  const { left, top, parent = [] } = lastSelectBlock;
+  // if (parent) {
+  //   parent = cloneDeep(parent);
+  // }
   updateChildrenPosition(left, top, lastSelectBlock.children, parent);
   return lastSelectBlock.children;
 };
