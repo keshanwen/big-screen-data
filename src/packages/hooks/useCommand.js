@@ -67,49 +67,82 @@ export function useCommand(bigScreenStore) {
       let befrorState = cloneDeep(bigScreenStore.state.blocks);
       return {
         redo: () => {
-          let focusData = bigScreenStore.focusData.focus;
-          let unfocused = bigScreenStore.focusData.unfocused;
-          let focusDataParent = focusData[0].parent;
+          let focusData = cloneDeep(bigScreenStore.focusData.focus);
+          let prevParent = cloneDeep(focusData[0].parent || []);
           let outerUnfocused = bigScreenStore.state.blocks.filter(
             (item) => !item.focus
           ); // 最外层没有获取焦点的数据
 
           let newBlock = useCalculateEditorBlockGroup(focusData);
-          let parentBlock = cloneDeep(newBlock);
 
-          console.log(focusDataParent, 'focusDataParent~~~~');
           newBlock.children = focusData;
-          // 给子节点添加 parent 属性,
-          // parent => '1,2,3,4,5' 将 uuid 组成一个 用逗号分割的字符串
-          newBlock.children.forEach((item) => {
-            const { uuid } = parentBlock;
-            if (!item.parent?.length) {
-              item.parent = [uuid];
+          // 注意 newBlock 也要加上 parent 属性
+          newBlock.parent = prevParent
+          const { uuid } = newBlock;
+
+          /*
+            给子节点添加 parent 属性
+            如何更新子节点的 parent 属性?
+
+
+            1, 在最外层成组 -> children 没有 parent 属性， parent: [newBlokUuid]
+               如果在最外层成组， 那么在更新 children 的 parent 属性时， newBlockUuid 应该放在子 children 的第一位， 判断依据是 获取焦点没有 parent 值
+
+            2, 不是在最外层， 成组。 将新的 newBlockUuid 放到原先 parent 最后一位的后面。
+            （或者， 拿到父节点的parent, [...父节点parent, 当前节点parent 的最后一位]）
+
+
+          */
+          function addParent(obj) {
+            if (!obj.parent?.length) {
+              obj.parent = [uuid]
             } else {
-              item.parent.unshift(uuid);
+              if (prevParent.length) {
+                let lastParent = prevParent[prevParent.length - 1]
+                let index = obj.parent.findIndex(item => item === lastParent) + 1
+                obj.parent.splice(index,0,uuid)
+              } else {
+                obj.parent.unshift(uuid)
+              }
             }
+
+            if (obj.children?.length) {
+              obj.children.forEach( item => addParent(item))
+            }
+          }
+
+          // 给子节点添加 parent 属性,
+          newBlock.children.forEach((jtem) => {
+           addParent(jtem)
           });
 
+
+          function updateChildren(obj) {
+            obj.children = obj.children.filter(item => {
+              const exit = focusData.some(jtem => jtem.uuid === item.uuid)
+              return !exit
+            })
+            obj.children.unshift(newBlock)
+          }
+
+
           // 如果没有parent，则说明是最外层
-          if (!focusDataParent?.length) {
+          if (!prevParent?.length) {
             // 这里不能简单的将 unfocused 的 数据进行，合并。因为 focusData中有儿子，肯定也没有focused, 所以重复了
             let newBlocks = cloneDeep([newBlock, ...outerUnfocused]);
             bigScreenStore.updateBigScreenState('blocks', newBlocks);
           } else {
-            const blocks = cloneDeep(bigScreenStore.state.blocks)
-            let outerUnfocused = []
-            let outerFocused = {}
-            blocks.forEach(item => {
-              if (item.uuid === focusDataParent[0]) {
-               outerFocused = item
+            let blocks = cloneDeep(bigScreenStore.state.blocks)
+            prevParent.reduce((accumulator,currentValue,currentIndex, array) => {
+              let obj = accumulator.find(item => item.uuid === currentValue)
+              if (array.length - 1 === currentIndex) {
+                updateChildren(obj)
+                return obj
               } else {
-                outerUnfocused.push(item)
+                return obj.children
               }
-            })
-            // 对 outerFocused 操作
-            focusDataParent.reduce((aur,cur,index, arr) => {
-
-            },outerFocused)
+            }, blocks)
+            bigScreenStore.updateBigScreenState('blocks', blocks);
           }
         },
         undo: () => {
