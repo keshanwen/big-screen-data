@@ -17,7 +17,7 @@ const props = defineProps({
 });
 
 onMounted(() => {
-  console.log(props.options, props.el)
+ // console.log(props.options, props.el)
 })
 
 </script>

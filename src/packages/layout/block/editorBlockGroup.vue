@@ -47,7 +47,7 @@ let blockGroupRef = ref()
 
 
 onMounted(() => {
-  console.log(props.block, 'props.block~~~~~')
+ // console.log(props.block, 'props.block~~~~~')
 })
 
 

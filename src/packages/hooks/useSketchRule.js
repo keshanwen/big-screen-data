@@ -30,7 +30,7 @@ export function useSketchRule() {
       bigScreenStore.updateCanvasContaniter({
         scale: nextScale,
       });
-      console.log(nextScale);
+      // console.log(nextScale);
     }
     nextTick(() => {
       cb()

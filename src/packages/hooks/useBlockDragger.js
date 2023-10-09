@@ -16,7 +16,7 @@ export function useBlockDragger(bigScreenStore) {
   });
 
   const mousedown = (e) => {
-    console.log(bigScreenStore.lastSelectBlock);
+    // console.log(bigScreenStore.lastSelectBlock);
 
     const { width: BWidth, height: BHeight } = bigScreenStore.lastSelectBlock; // 拖拽的最后的元素
 

@@ -30,7 +30,7 @@ export function useMenuDragger(bigScreenStore) {
       },
     ]);
     bigScreenStore.updateBigScreenState('blocks', temporaryValue);
-    console.log(bigScreenStore.state)
+    // console.log(bigScreenStore.state)
     currentComponent = null;
   };
 

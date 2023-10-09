@@ -34,7 +34,7 @@ export function useCommand(bigScreenStore) {
       }
       queue.push({ redo, undo }); // 保存指令的前进后退
       state.current = current + 1;
-      console.log(queue);
+      // console.log(queue);
     };
   };
 
@@ -174,7 +174,7 @@ export function useCommand(bigScreenStore) {
           }
 
           function updateChildren(obj) {
-            console.log(obj, 'obj~~~~~~')
+            // console.log(obj, 'obj~~~~~~')
             const newChildren = useRemoveBlockGroup(lastSelectBlock) || []
             // 改变 newChildren 的 parent 的指向
             newChildren.forEach(jtem => {

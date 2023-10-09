@@ -28,7 +28,7 @@ function getPreviewLable(block) {
 
 
 onMounted(() => {
-  console.log('singleLayer......page')
+  // console.log('singleLayer......page')
 })
 </script>
 
