@@ -205,8 +205,8 @@ export function useCommand(bigScreenStore) {
             blocks = [...newChildren, ...blocks]
             bigScreenStore.updateBigScreenState('blocks', blocks);
           }
-          console.log(JSON.stringify(blocks, null, 2))
-          console.log(parent, 'parent~~~~')
+          // console.log(JSON.stringify(blocks, null, 2))
+          // console.log(parent, 'parent~~~~')
         },
         undo: () => {
           bigScreenStore.updateBigScreenState('blocks', befrorState);

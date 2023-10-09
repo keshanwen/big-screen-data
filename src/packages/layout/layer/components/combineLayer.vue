@@ -5,6 +5,9 @@
         props.block.focus ? 'lay-item-block-focus' : '',
         'combine-title',
       ]"
+      :style="{
+        textIndent: getTextIndent()
+      }"
       @click="isShowMore"
       @mousedown="(e) => blockMousedown(e, props.block)"
     >
@@ -55,6 +58,11 @@ let isShowMoreLayer = ref(false);
 const isShowMore = () => {
   isShowMoreLayer.value = !isShowMoreLayer.value;
 };
+
+const getTextIndent = () => {
+  const parentLength = props.block.parent?.length || 0
+  return parentLength * 10 + 'px'
+}
 </script>
 
 <style lang="scss" scoped>
@@ -64,7 +72,7 @@ const isShowMore = () => {
     background-color: antiquewhite;
     margin-bottom: 4px;
     cursor: pointer;
-  }
+      }
   .single-layer-son {
     height: 60px;
     background-color: darkgray;
