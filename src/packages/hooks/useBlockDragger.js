@@ -31,7 +31,8 @@ export function useBlockDragger(bigScreenStore) {
         left,
       })),
       lines: (() => {
-        const { unfocused } = bigScreenStore.focusData; // 获取其他没选中的以他们的位置做辅助线
+        // const { unfocused } = bigScreenStore.focusData; // 获取其他没选中的以他们的位置做辅助线
+        const unfocused = bigScreenStore.state.blocks.filter( block => !block.focus )
         let lines = { x: [], y: [] }; // 计算横线的位置用y来存放  x存的是纵向的
         [
           ...unfocused,
