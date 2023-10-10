@@ -9,7 +9,7 @@
         textIndent: getTextIndent()
       }"
       @click="isShowMore"
-      @mousedown="(e) => blockMousedown(e, props.block)"
+      @mousedown="(e) => blockMousedown(e, props.block, true)"
     >
       <el-icon  v-if="!isShowMoreLayer"><ArrowRightBold /></el-icon>
       <el-icon v-else><ArrowDownBold /></el-icon>

@@ -6,3 +6,6 @@ export const REGISTERCONFIG = Symbol()
 
 // 指令
 export const COMMAND = Symbol()
+
+// mouseDown
+export const MOUSEDOWN = Symbol()

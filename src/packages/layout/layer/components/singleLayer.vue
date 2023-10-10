@@ -1,5 +1,5 @@
 <template>
-    <div :class="[props.block.focus ? 'lay-item-block-focus' : '', 'single-home']" @mousedown="(e) => blockMousedown(e, block)">
+    <div :class="[props.block.focus ? 'lay-item-block-focus' : '', 'single-home']" @mousedown="(e) => blockMousedown(e, block, true)">
        {{ getPreviewLable(props.block) }}
     </div>
 </template>

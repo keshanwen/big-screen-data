@@ -88,9 +88,12 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
 
 
   // 让所有block 失去焦点
-  const clearBlockFocus = () => {
+  const clearBlockFocus = (clearDoubleClick = true) => {
     function clearBlock(obj) {
       obj.focus = false
+      if (clearDoubleClick) {
+        obj.doubleClick = false
+      }
       obj.children?.length && obj.children.forEach(item => {
         clearBlock(item)
       })
@@ -98,6 +101,7 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
 
     state.blocks.forEach(block =>  clearBlock(block));
   }
+
 
   // 更新画布相关的信息
   const updateCanvasContaniter = (obj) => {
@@ -114,6 +118,30 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
       }
       return state[cur]
     }, state)
+  }
+
+  // 找到 blocks 的某一条数据
+  const findOneBlock = (parent = []) => {
+    let block = null
+    if (!parent.length) return block
+    parent.reduce((acur, cur, index, arr) => {
+      let obj = acur.find( block => block.uuid === cur)
+      if (index === arr.length - 1) {
+        block = obj
+        return obj
+      } else {
+        return obj.children
+      }
+    },state.blocks)
+    return block
+  }
+
+  // 更新某一条 block 的数据
+  const updateOneBlockData = (parent = [], data = {}) => {
+    let block = findOneBlock(parent)
+    Object.keys(data).forEach(key => {
+      block[key] = data[key]
+    })
   }
 
 

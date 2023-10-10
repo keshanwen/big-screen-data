@@ -6,6 +6,8 @@
       props.block.focus ? 'editor-block-home-focus' : '',
       'editor-block-home',
     ]"
+    @mousedown="e => blockMousedown(e,block)"
+    @dblclick="e => blockDoubleClick(e, block)"
   >
     <component ref="componentRef" :is="getComponent()" :props="props.block" />
   </div>
@@ -16,19 +18,17 @@ import { usebigScreenStore } from '../../data/bigScreenGlobalStore';
 import { useFocus } from '../../hooks/useFocus';
 import { useBlockDragger } from '../../hooks/useBlockDragger';
 import { $dropdown, DropdownItem } from '../dialog/dropdown.jsx';
-import { REGISTERCONFIG, COMMAND } from '../../config/provideInjectKey'
+import { REGISTERCONFIG, COMMAND,MOUSEDOWN } from '../../config/provideInjectKey'
 
 
 const registerConfig = inject(REGISTERCONFIG) as any
 const command = inject(COMMAND) as any
+const mousedown = inject(MOUSEDOWN) as any
 
 const props = defineProps({
   block: {
     type: Object,
     required: true,
-  },
-  mousedownFn: {
-    type: Function,
   },
 });
 
@@ -58,10 +58,9 @@ watch(
 );
 
 const bigScreenStore = usebigScreenStore();
-const { blockMousedown } = useFocus(bigScreenStore, (e) => {
+const { blockMousedown, blockDoubleClick } = useFocus(bigScreenStore, (e) => {
   // 获取焦点后进行拖拽
-  props.mousedownFn && props.mousedownFn(e);
-  // mousedown(e);
+  mousedown && mousedown(e)
 });
 // 实现组件拖拽
 // let { mousedown, markLine } = useBlockDragger(bigScreenStore);

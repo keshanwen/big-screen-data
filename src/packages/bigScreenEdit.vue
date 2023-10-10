@@ -20,12 +20,11 @@
           <div
             v-for="block in bigScreenStore.state.blocks"
             :key="block.uuid"
-            @mousedown="e => blockMousedown(e,block)"
             @contextmenu="(e) => onContextMenuBlock(e, block)"
             class="all-block-wrap"
           >
-            <EditorBlockGroup v-if="block.group" :block="block" :mousedownFn="mousedown" />
-            <EditorBlock v-else :block="block" :mousedownFn="mousedown" />
+            <EditorBlockGroup v-if="block.group" :block="block" />
+            <EditorBlock v-else :block="block" />
           </div>
           <!-- 辅助线 -->
           <GuideLines :markLine="markLine" />
@@ -46,6 +45,7 @@ import {
   watch,
   nextTick,
   inject,
+  provide
 } from 'vue';
 import SketchRule from './layout/sketchRule.vue';
 import { usebigScreenStore } from './data/bigScreenGlobalStore';
@@ -56,10 +56,11 @@ import EditorBlock from './layout/block/editorBlock.vue';
 import GuideLines from './layout/guideLines.vue';
 import EditorBlockGroup from './layout/block/editorBlockGroup.vue'
 import { $dropdown, DropdownItem } from './layout/dialog/dropdown.jsx'
-import { COMMAND } from './config/provideInjectKey'
+import { COMMAND, MOUSEDOWN } from './config/provideInjectKey'
 import { useContextMenu } from './hooks/useContextMenu.jsx'
 
 const command = inject(COMMAND) as any
+
 
 let sketchRuleRef = ref();
 let wrapper = ref();
@@ -74,6 +75,9 @@ const { containerMousedown, blockMousedown } = useFocus(bigScreenStore, (e) => {
 const { handleScroll: handleScrollSketRule, handleWheel: handleWheelSketRule } =
   useSketchRule();
 let { mousedown, markLine } = useBlockDragger(bigScreenStore);
+
+// 将  mousedown 传递下去
+provide(MOUSEDOWN, mousedown)
 
 const canvasStyle = computed(() => {
   return {
