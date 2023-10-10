@@ -100,7 +100,7 @@ function getComponent() {
 
 .editor-block-home-focus {
   &::after {
-    border: 2px dashed red;
+    border: 1px dashed red;
   }
 }
 </style>

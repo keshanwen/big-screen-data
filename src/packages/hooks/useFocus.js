@@ -22,6 +22,8 @@ export function useFocus(bigScreenStore, callback) {
     if (parent?.length) {
       bigScreenStore.updateOneBlockData(parent, {
         doubleClick: true
+      }, (obj) => {
+        obj.halfFocus = true
       })
     }
   }
@@ -51,6 +53,8 @@ export function useFocus(bigScreenStore, callback) {
     if (layerClick && parentBlock) {
       bigScreenStore.updateOneBlockData(parent, {
         doubleClick: true
+      },(obj) => {
+        obj.halfFocus = true
       })
     }
     // 如果不是双击，那么直接将 block 指向组先元素
@@ -64,6 +68,8 @@ export function useFocus(bigScreenStore, callback) {
       if (layerClick && parentBlock) {
         bigScreenStore.updateOneBlockData(parent, {
           doubleClick: true
+        },(obj) => {
+          obj.halfFocus = true
         })
       }
       block.focus = true

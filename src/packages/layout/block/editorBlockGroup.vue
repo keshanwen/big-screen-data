@@ -2,7 +2,7 @@
     <div ref="blockGroupRef"
      :style="blockGroupStyles"
      :class="[
-      props.block.focus ? 'editor-block-group-home-focus' : '',
+      props.block.focus || props.block.halfFocus ? 'editor-block-group-home-focus' : '',
       'editor-block-group-home',
     ]"
      @mousedown="e => blockMousedown(e,block)"
@@ -70,7 +70,7 @@ onMounted(() => {
 }
 
 .editor-block-group-home-focus {
-  border: 2px dashed red;
+  border: 1px dashed red;
   //  &::after {
   //   border: 2px dashed red;
   // }

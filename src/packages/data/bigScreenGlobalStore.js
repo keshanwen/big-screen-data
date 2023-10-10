@@ -93,6 +93,7 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
       obj.focus = false
       if (clearDoubleClick) {
         obj.doubleClick = false
+        obj.halfFocus = false
       }
       obj.children?.length && obj.children.forEach(item => {
         clearBlock(item)
@@ -121,11 +122,12 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
   }
 
   // 找到 blocks 的某一条数据
-  const findOneBlock = (parent = []) => {
+  const findOneBlock = (parent = [], callback) => {
     let block = null
     if (!parent.length) return block
     parent.reduce((acur, cur, index, arr) => {
-      let obj = acur.find( block => block.uuid === cur)
+      let obj = acur.find(block => block.uuid === cur)
+      callback && callback(obj)
       if (index === arr.length - 1) {
         block = obj
         return obj
@@ -136,9 +138,9 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
     return block
   }
 
-  // 更新某一条 block 的数据
-  const updateOneBlockData = (parent = [], data = {}) => {
-    let block = findOneBlock(parent)
+  // 更新某一条 block 的数据, 同时可能对其父元素做处理
+  const updateOneBlockData = (parent = [], data = {}, callback) => {
+    let block = findOneBlock(parent, callback)
     Object.keys(data).forEach(key => {
       block[key] = data[key]
     })
