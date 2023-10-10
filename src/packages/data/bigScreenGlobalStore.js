@@ -153,6 +153,8 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
     lastSelectBlock,
     clearBlockFocus,
     updateCanvasContaniter,
-    updateBigScreenState
+    updateBigScreenState,
+    findOneBlock,
+    updateOneBlockData
   };
 });

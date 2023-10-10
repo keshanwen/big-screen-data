@@ -14,22 +14,15 @@ export function useFocus(bigScreenStore, callback) {
 
     // 双击的回调
   const blockDoubleClick = (e, block) => {
-        e.preventDefault();
+    e.preventDefault();
     e.stopPropagation();
     bigScreenStore.clearBlockFocus()
     block.focus = true
     const { parent } = block
     if (parent?.length) {
-      parent.reduce((acur, cur, index, arr) => {
-        let obj = acur.find( block => block.uuid === cur)
-        if (index === arr.length - 1) {
-          // 双击的时候给父增加，添加 doubleClick: true 属性
-          obj.doubleClick = true
-          return obj
-        } else {
-          return obj.children
-        }
-      },bigScreenStore.state.blocks)
+      bigScreenStore.updateOneBlockData(parent, {
+        doubleClick: true
+      })
     }
   }
 
@@ -53,29 +46,25 @@ export function useFocus(bigScreenStore, callback) {
 
     let parentBlock;
     if (parent?.length) {
-      parent.reduce((acur, cur, index, arr) => {
-        let obj = acur.find( item => item.uuid === cur)
-        if (index === arr.length - 1) {
-          parentBlock = obj
-          return obj
-        } else {
-          return obj.children
-        }
-       }, bigScreenStore.state.blocks)
+      parentBlock = bigScreenStore.findOneBlock(parent)
     }
     if (layerClick && parentBlock) {
-      parentBlock.doubleClick = true
+      bigScreenStore.updateOneBlockData(parent, {
+        doubleClick: true
+      })
     }
     // 如果不是双击，那么直接将 block 指向组先元素
     if(!parentBlock?.doubleClick && grandParentBlockUuid){
       // 改变 block 指向， 单击画布上的组件，将指向祖先 block 组件
-      block = bigScreenStore.state.blocks.find( item => item.uuid === grandParentBlockUuid)
+      block = bigScreenStore.findOneBlock([grandParentBlockUuid])
     }
     if (isNoLeve) {
       // 如果从父节点 => 子节点， 那么会有问题， 会将 parentBlock.doubleClick重置为 false
       bigScreenStore.clearBlockFocus()
       if (layerClick && parentBlock) {
-        parentBlock.doubleClick = true
+        bigScreenStore.updateOneBlockData(parent, {
+          doubleClick: true
+        })
       }
       block.focus = true
     }
