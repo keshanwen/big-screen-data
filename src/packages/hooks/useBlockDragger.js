@@ -17,6 +17,8 @@ export function useBlockDragger(bigScreenStore) {
 
   const mousedown = (e) => {
     // console.log(bigScreenStore.lastSelectBlock);
+    // 如果点击的是 resize 那么不移动
+    // if (e.target.className.includes('block-resize')) return
 
     const { width: BWidth, height: BHeight } = bigScreenStore.lastSelectBlock; // 拖拽的最后的元素
 

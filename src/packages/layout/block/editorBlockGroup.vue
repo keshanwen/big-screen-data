@@ -12,6 +12,7 @@
         <EditorBlockGroup v-if="item.children && item.children.length" :block="item"/>
         <EditorBlock v-else :block="item"/>
       </template>
+      <BlockResize v-if="props.block.focus" :block="props.block"/>
     </div>
 </template>
 <script setup>
@@ -20,6 +21,7 @@ import EditorBlock from './editorBlock.vue';
 import { useFocus } from '../../hooks/useFocus';
 import { usebigScreenStore } from '../../data/bigScreenGlobalStore';
 import { MOUSEDOWN } from '../../config/provideInjectKey'
+import BlockResize from '../blockResize.vue'
 
 defineOptions({
   name: 'EditorBlockGroup',

@@ -1,16 +1,18 @@
 <template>
-  <div
-    ref="blockRef"
-    :style="blockStyles"
-    :class="[
-      props.block.focus ? 'editor-block-home-focus' : '',
-      'editor-block-home',
-    ]"
-    @mousedown="e => blockMousedown(e,block)"
-    @dblclick="e => blockDoubleClick(e, block)"
-  >
-    <component ref="componentRef" :is="getComponent()" :props="props.block" />
-  </div>
+    <div
+      ref="blockRef"
+      :style="blockStyles"
+      :class="[
+        props.block.focus ? 'editor-block-home-focus' : '',
+        'editor-block-home',
+      ]"
+      @mousedown="e => blockMousedown(e,block)"
+      @dblclick="e => blockDoubleClick(e, block)"
+    >
+      <component ref="componentRef" :is="getComponent()" :props="props.block" />
+      <BlockResize v-if="props.block.focus" :block="props.block"/>
+    </div>
+
 </template>
 <script setup lang="tsx">
 import { ref, computed, onMounted, watch, nextTick, inject } from 'vue';
@@ -18,7 +20,8 @@ import { usebigScreenStore } from '../../data/bigScreenGlobalStore';
 import { useFocus } from '../../hooks/useFocus';
 import { useBlockDragger } from '../../hooks/useBlockDragger';
 import { $dropdown, DropdownItem } from '../dialog/dropdown.jsx';
-import { REGISTERCONFIG, COMMAND,MOUSEDOWN } from '../../config/provideInjectKey'
+import { REGISTERCONFIG, COMMAND, MOUSEDOWN } from '../../config/provideInjectKey'
+import BlockResize from '../blockResize.vue'
 
 
 const registerConfig = inject(REGISTERCONFIG) as any

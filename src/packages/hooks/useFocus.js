@@ -27,7 +27,7 @@ export function useFocus(bigScreenStore, callback) {
   }
 
   const blockMousedown = (e, block, layerClick = false) => {
-    console.log(e.target, block, layerClick,'e~~~~~~')
+    // console.log(e.target, block, layerClick,'e~~~~~~')
 
     e.preventDefault();
     e.stopPropagation();

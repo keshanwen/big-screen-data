@@ -4,7 +4,7 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
 import * as echarts from 'echarts';
 
 
@@ -16,16 +16,19 @@ const props = defineProps({
 
 let echartBarRef = ref()
 
+
 const Styles = computed(() => ({
   width: `${props.props.width}px`,
   height: `${props.props.height}px`,
 }));
 
 
-const init = () => {
 
+
+const init = () => {
 // 基于准备好的dom，初始化echarts实例
 var myChart = echarts.init(echartBarRef.value);
+
 // 绘制图表
 myChart.setOption({
   title: {
@@ -44,7 +47,16 @@ myChart.setOption({
     }
   ]
 });
+
+watch(Styles, (newVal, oldVal) => {
+  myChart.resize()
+}, {
+  flush: 'post'
+})
 }
+
+
+
 
 onMounted(() => {
   init()
