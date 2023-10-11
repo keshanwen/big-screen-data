@@ -232,39 +232,20 @@ export const useUpdateAllParentState = (bigScreenStore) => {
     const parentUuid = bigScreenStore.focusDataParent
     const parentBlock = bigScreenStore.findOneBlock(parentUuid)
     const { width: parentWidth, height: parentHeight, top: parentTop, left: parentLeft } = parentBlock
-    console.log(parentBlock, 'parentBlock')
 
 
-    if (offsetTop !== 0) {
-      bigScreenStore.updateOneBlockData(parentUuid, {
-        height: parentHeight - offsetTop,
-        top: parentTop + offsetTop,
-        children: parentBlock.children.map(item => {
-          item.top -= offsetTop
-          return item
-        })
-      })
-    }
-    if (offsetLeft !== 0) {
-      bigScreenStore.updateOneBlockData(parentUuid, {
-        width: parentWidth - offsetLeft,
+     bigScreenStore.updateOneBlockData(parentUuid, {
+        height: parentHeight - offsetTop + offsetBootom,
+       top: parentTop + offsetTop,
+        width: parentWidth - offsetLeft + offsetRight,
         left: parentLeft + offsetLeft,
         children: parentBlock.children.map(item => {
-          item.left -= offsetLeft
+          item.top -= offsetTop
+           item.left -= offsetLeft
           return item
         })
-      })
-    }
-    if (offsetRight !== 0) {
-      bigScreenStore.updateOneBlockData(parentUuid, {
-        width: parentWidth + offsetRight,
-      })
-    }
-    if (offsetBootom !== 0) {
-      bigScreenStore.updateOneBlockData(parentUuid, {
-        height: parentHeight + offsetBootom,
-      })
-    }
+    })
+
   } else {
     console.log('no')
   }
