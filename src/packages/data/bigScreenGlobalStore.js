@@ -67,6 +67,11 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
     return obj
   });
 
+  // 获取焦点的 parent
+  const focusDataParent = computed(() => {
+    return focusData.value.focus[0]?.parent || []
+  })
+
     // 最后选择的那一个
   // const lastSelectBlock = computed(()=>state.blocks[state.selectIndex])
   const lastSelectBlock = computed(() => {
@@ -152,6 +157,7 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
     canvasContaniter,
     state,
     focusData,
+    focusDataParent,
     lastSelectBlock,
     clearBlockFocus,
     updateCanvasContaniter,

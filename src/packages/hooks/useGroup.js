@@ -18,7 +18,7 @@ function updateChildrenPosition(left, top, children, parent) {
 }
 
 // 是否需要更新所有父级元素
-function ifUpdateAllParentState(bigScreenStore) {
+/* function ifUpdateAllParentState(bigScreenStore) {
   let focusData = bigScreenStore.focusData.focus || []
   if (!focusData[0]?.parent?.length) { // 如果操作的不是组内的元素
     return false
@@ -38,7 +38,64 @@ function ifUpdateAllParentState(bigScreenStore) {
 
   return false
 }
+ */
+function ifUpdateAllParentState(bigScreenStore) {
+    /*
+      找出所有 block 的 left 的最小值，正常情况 minLeft = 0, 如果 minLeft !== 0  需要更新 parentBlock
 
+      top 也是类此。
+
+      找出所有 max(top + height) (实际上就是block 底部距离Parent block top的距离)
+        max(top + height) 一定是等于 parentBlock 的 height，如果不相等那么需要更新 parentBlock
+
+      max(left + width) 也是类此
+    */
+  let data = {
+    isUpdate: false,
+    offsetLeft: 0,
+    offsetRight: 0,
+    offsetTop: 0,
+    offsetBootom: 0
+  }
+  const parentBlock = bigScreenStore.findOneBlock(bigScreenStore.focusDataParent)
+  if (!bigScreenStore.focusDataParent.length) { // 操作的不是组内元素
+    data.isUpdate = false
+    return data
+  }
+  const { children, width: parentWidth, height: parentHeight } = parentBlock
+  let state = {
+    minLeft: Infinity,
+    minTop: Infinity,
+    maxLeft: -Infinity,
+    maxTop: -Infinity
+  }
+  children.forEach(block => {
+    const { left, top, width, height } = block
+    state.minLeft = state.minLeft < left ? state.minLeft : left
+    state.minTop = state.minTop < top ? state.minTop : top
+    state.maxTop = top + height > state.maxTop ? top + height : state.maxTop
+    state.maxLeft = left + width > state.maxLeft ? left + width : state.maxLeft
+  })
+  if (state.minLeft !== 0) {
+    data.isUpdate = true
+    data.offsetLeft = state.minLeft
+  }
+  if (state.minTop !== 0) {
+    data.isUpdate = true
+    data.offsetTop = state.minTop
+  }
+  if (state.maxTop !== parentHeight) {
+    data.isUpdate = true
+    data.offsetBootom = state.maxTop - parentHeight
+  }
+  if (state.maxLeft !== parentWidth) {
+    data.isUpdate = true
+    data.offsetRight = state.maxLeft - parentWidth
+  }
+  // console.log(parentBlock, 'parentBlock~~~~~')
+  // console.log(state, 'state')
+  return data
+}
 // 找到最大偏移量
 function findMaxOffset(bigScreenStore) {
   let state = {
@@ -169,51 +226,43 @@ export const useRemoveBlockGroup = (lastSelectBlock) => {
 
 // 更新所有上级（组）的数据
 export const useUpdateAllParentState = (bigScreenStore) => {
-  /*
-
-    找出所有 block 的 left 的最小值，正常情况 minLeft = 0, 如果 minLeft < 0 ||  minleft > 0 需要更新 parentBlock
-
-    top 也是类此。
-
-    找出所有 max(top + height) (实际上就是block 底部距离Parent block 的距离)
-      max(top + height) 一定是等于 parentBlock 的 height，如果不相等那么需要更新 parentBlock
-
-    max(left + width) 也是类此
-  */
- if (ifUpdateAllParentState(bigScreenStore)) {
-    let { offsetLeft, offsetRight, offsetTop, offsetBootom } = findMaxOffset(bigScreenStore)
-    let focusData = bigScreenStore.focusData.focus
-    let parentUuid = focusData[0].parent
+  const { isUpdate, offsetLeft, offsetTop, offsetBootom, offsetRight } = ifUpdateAllParentState(bigScreenStore)
+  if (isUpdate) {
+   console.log(offsetLeft, offsetTop, offsetBootom, offsetRight)
+    const parentUuid = bigScreenStore.focusDataParent
     const parentBlock = bigScreenStore.findOneBlock(parentUuid)
+    const { width: parentWidth, height: parentHeight, top: parentTop, left: parentLeft } = parentBlock
+    console.log(parentBlock, 'parentBlock')
 
-    if (offsetTop > 0) {
+
+    if (offsetTop !== 0) {
       bigScreenStore.updateOneBlockData(parentUuid, {
-        height: parentBlock.height + offsetTop,
-        top: parentBlock.top - offsetTop,
+        height: parentHeight - offsetTop,
+        top: parentTop + offsetTop,
         children: parentBlock.children.map(item => {
-          item.top += offsetTop
+          item.top -= offsetTop
           return item
         })
       })
     }
-    if (offsetLeft > 0) {
+    if (offsetLeft !== 0) {
       bigScreenStore.updateOneBlockData(parentUuid, {
-        width: parentBlock.width + offsetLeft,
-        left: parentBlock.left - offsetLeft,
+        width: parentWidth - offsetLeft,
+        left: parentLeft + offsetLeft,
         children: parentBlock.children.map(item => {
-          item.left += offsetLeft
+          item.left -= offsetLeft
           return item
         })
       })
     }
-    if (offsetRight > 0) {
+    if (offsetRight !== 0) {
       bigScreenStore.updateOneBlockData(parentUuid, {
-        width: parentBlock.width + offsetRight,
+        width: parentWidth + offsetRight,
       })
     }
-    if (offsetBootom > 0) {
+    if (offsetBootom !== 0) {
       bigScreenStore.updateOneBlockData(parentUuid, {
-        height: parentBlock.height + offsetBootom,
+        height: parentHeight + offsetBootom,
       })
     }
   } else {
