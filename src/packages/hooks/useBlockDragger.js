@@ -1,6 +1,7 @@
 import { reactive } from 'vue';
 import { events } from '../utils/events';
 import { START, END } from '../config/eventName';
+import { useUpdateAllParentState } from './useGroup'
 
 export function useBlockDragger(bigScreenStore) {
   /* 注意带有数据的hook（定义在hook内 最外层的数据），不要多次引用，因为每引用一次，就会生成一份新的数据  */
@@ -128,14 +129,15 @@ export function useBlockDragger(bigScreenStore) {
     });
   };
   const mouseup = (e) => {
-    document.removeEventListener('mousemove', mousemove);
+        document.removeEventListener('mousemove', mousemove);
     document.removeEventListener('mouseup', mouseup);
-
     markLine.x = null;
     markLine.y = null;
     if (dragState.dragging) {
       // 如果只是点击就不会触发
       events.emit(END);
+      // 改变组内元素时，可能需要更新所有的父级数据
+      useUpdateAllParentState(bigScreenStore)
     }
   };
 

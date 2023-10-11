@@ -17,6 +17,70 @@ function updateChildrenPosition(left, top, children, parent) {
   });
 }
 
+// 是否需要更新所有父级元素
+function ifUpdateAllParentState(bigScreenStore) {
+  let focusData = bigScreenStore.focusData.focus || []
+  if (!focusData[0]?.parent?.length) { // 如果操作的不是组内的元素
+    return false
+  }
+
+  for (let i = 0; i < focusData.length; i++) {
+    const block = focusData[i]
+    const { left, top, parent, width, height } = block
+    let parentBlock = bigScreenStore.findOneBlock(parent)
+    let { width: parentWidth, height: parentHeight } = parentBlock
+
+    if (left < 0 || top < 0 || left + width > parentWidth || top + height > parentHeight) {
+      return true
+    }
+  }
+
+
+  return false
+}
+
+// 找到最大偏移量
+function findMaxOffset(bigScreenStore) {
+  let state = {
+    offsetTop: -Infinity,
+    offsetBootom: -Infinity,
+    offsetLeft: -Infinity,
+    offsetRight: -Infinity
+  }
+  let focusData = bigScreenStore.focusData.focus
+
+  for (let i = 0; i < focusData.length; i++) {
+    const block = focusData[i]
+    const { left, top, parent, width, height } = block
+    let parentBlock = bigScreenStore.findOneBlock(parent)
+    let { width: parentWidth, height: parentHeight } = parentBlock
+
+    if (left < 0) {
+      let absLeft = Math.abs(left)
+      state.offsetLeft = state.offsetLeft < absLeft ? absLeft : state.offsetLeft
+    }
+
+    if (top < 0) {
+      let absTop = Math.abs(top)
+      state.offsetTop = state.offsetTop < absTop ? absTop : state.offsetTop
+    }
+
+    if (left + width > parentWidth) {
+      let offsetRight = left + width - parentWidth
+      state.offsetRight = state.offsetRight < offsetRight ? offsetRight : state.offsetRight
+    }
+
+    if (top + height > parentHeight) {
+      let offsetBootom = top + height - parentHeight
+      state.offsetBootom = state.offsetBootom < offsetBootom ? offsetBootom : state.offsetBootom
+    }
+
+
+  }
+
+  return state
+}
+
 export const useCalculateEditorBlockGroup = (blocks) => {
   /* width height top left zindex */
   /*
@@ -102,3 +166,57 @@ export const useRemoveBlockGroup = (lastSelectBlock) => {
   updateChildrenPosition(left, top, lastSelectBlock.children, parent);
   return lastSelectBlock.children;
 };
+
+// 更新所有上级（组）的数据
+export const useUpdateAllParentState = (bigScreenStore) => {
+  /*
+
+    找出所有 block 的 left 的最小值，正常情况 minLeft = 0, 如果 minLeft < 0 ||  minleft > 0 需要更新 parentBlock
+
+    top 也是类此。
+
+    找出所有 max(top + height) (实际上就是block 底部距离Parent block 的距离)
+      max(top + height) 一定是等于 parentBlock 的 height，如果不相等那么需要更新 parentBlock
+
+    max(left + width) 也是类此
+  */
+ if (ifUpdateAllParentState(bigScreenStore)) {
+    let { offsetLeft, offsetRight, offsetTop, offsetBootom } = findMaxOffset(bigScreenStore)
+    let focusData = bigScreenStore.focusData.focus
+    let parentUuid = focusData[0].parent
+    const parentBlock = bigScreenStore.findOneBlock(parentUuid)
+
+    if (offsetTop > 0) {
+      bigScreenStore.updateOneBlockData(parentUuid, {
+        height: parentBlock.height + offsetTop,
+        top: parentBlock.top - offsetTop,
+        children: parentBlock.children.map(item => {
+          item.top += offsetTop
+          return item
+        })
+      })
+    }
+    if (offsetLeft > 0) {
+      bigScreenStore.updateOneBlockData(parentUuid, {
+        width: parentBlock.width + offsetLeft,
+        left: parentBlock.left - offsetLeft,
+        children: parentBlock.children.map(item => {
+          item.left += offsetLeft
+          return item
+        })
+      })
+    }
+    if (offsetRight > 0) {
+      bigScreenStore.updateOneBlockData(parentUuid, {
+        width: parentBlock.width + offsetRight,
+      })
+    }
+    if (offsetBootom > 0) {
+      bigScreenStore.updateOneBlockData(parentUuid, {
+        height: parentBlock.height + offsetBootom,
+      })
+    }
+  } else {
+    console.log('no')
+  }
+}
