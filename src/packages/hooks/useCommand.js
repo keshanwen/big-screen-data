@@ -1,5 +1,5 @@
 import { onUnmounted } from 'vue';
-import { cloneDeep } from '../utils/util';
+import { cloneDeep, findOneBlock } from '../utils/util';
 import { events } from '../utils/events';
 import { START, END } from '../config/eventName';
 import { useCalculateEditorBlockGroup, useRemoveBlockGroup } from './useGroup';
@@ -50,7 +50,25 @@ export function useCommand(bigScreenStore) {
       };
       return {
         redo: () => {
-          bigScreenStore.updateBigScreenState('blocks', state.after);
+          let focusData = cloneDeep(bigScreenStore.focusData.focus);
+          let prevParent = cloneDeep(focusData[0].parent || []);
+          let blocks = cloneDeep(bigScreenStore.state.blocks)
+          if (prevParent.length) { // 删除的不是最外层的
+            let parent = findOneBlock(prevParent, blocks)
+            parent.children = parent.children.filter(item => !focusData.some(jtem => jtem.uuid === item.uuid))
+            if (!parent?.children?.length) { // 如果删除掉了一个组的所有子元素，
+              let { uuid, parent: grandParent = [] } = parent
+              if (grandParent.length) {
+                let grandParentBlock = findOneBlock(grandParent, blocks)
+                grandParentBlock.children = grandParentBlock.children.filter( item => item.uuid !== uuid)
+              } else { // 父元素是最外层元素
+                blocks = blocks.filter( item => item.uuid !== uuid)
+              }
+            }
+          } else { // 删除的是最外层的
+            blocks = blocks.filter(item => !focusData.some( jtem => jtem.uuid === item.uuid))
+          }
+          bigScreenStore.updateBigScreenState('blocks', blocks);
         },
         undo: () => {
           bigScreenStore.updateBigScreenState('blocks', state.before);
