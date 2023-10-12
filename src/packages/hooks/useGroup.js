@@ -18,7 +18,7 @@ function updateChildrenPosition(left, top, children, parent) {
 }
 
 // 是否需要更新所有父级元素
-function ifUpdateAllParentState(bigScreenStore) {
+function ifUpdateAllParentState(bigScreenStore, parentUuid) {
   /*
       找出所有 block 的 left 的最小值，正常情况 minLeft = 0, 如果 minLeft !== 0  需要更新 parentBlock
 
@@ -37,13 +37,8 @@ function ifUpdateAllParentState(bigScreenStore) {
     offsetBootom: 0,
   };
   const parentBlock = bigScreenStore.findOneBlock(
-    bigScreenStore.focusDataParent
+    parentUuid
   );
-  if (!bigScreenStore.focusDataParent.length) {
-    // 操作的不是组内元素
-    data.isUpdate = false;
-    return data;
-  }
   const { children, width: parentWidth, height: parentHeight } = parentBlock;
   let state = {
     minLeft: Infinity,
@@ -164,12 +159,14 @@ export const useRemoveBlockGroup = (lastSelectBlock) => {
 };
 
 // 更新所有上级（组）的数据
-export const useUpdateAllParentState = (bigScreenStore) => {
+export const useUpdateAllParentState = (bigScreenStore, parentUuid = []) => {
+  if (!parentUuid.length) {
+    console.log('no need update parent')
+    return
+  }
   const { isUpdate, offsetLeft, offsetTop, offsetBootom, offsetRight } =
-    ifUpdateAllParentState(bigScreenStore);
+    ifUpdateAllParentState(bigScreenStore, parentUuid);
   if (isUpdate) {
-    console.log(offsetLeft, offsetTop, offsetBootom, offsetRight);
-    const parentUuid = bigScreenStore.focusDataParent;
     const parentBlock = bigScreenStore.findOneBlock(parentUuid);
     const {
       width: parentWidth,
@@ -189,7 +186,9 @@ export const useUpdateAllParentState = (bigScreenStore) => {
         return item;
       }),
     });
+    // 不断的去更新父，祖父节点
+    useUpdateAllParentState(bigScreenStore,parentBlock?.parent)
   } else {
-    console.log('no');
+    console.log('no need update parent')
   }
 };

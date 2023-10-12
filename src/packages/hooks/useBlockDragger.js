@@ -141,7 +141,7 @@ export function useBlockDragger(bigScreenStore) {
       // 如果只是点击就不会触发
       events.emit(END);
       // 改变组内元素时，可能需要更新所有的父级数据
-      useUpdateAllParentState(bigScreenStore)
+      useUpdateAllParentState(bigScreenStore, bigScreenStore.focusDataParent)
     }
   };
 
