@@ -18,29 +18,8 @@ function updateChildrenPosition(left, top, children, parent) {
 }
 
 // 是否需要更新所有父级元素
-/* function ifUpdateAllParentState(bigScreenStore) {
-  let focusData = bigScreenStore.focusData.focus || []
-  if (!focusData[0]?.parent?.length) { // 如果操作的不是组内的元素
-    return false
-  }
-
-  for (let i = 0; i < focusData.length; i++) {
-    const block = focusData[i]
-    const { left, top, parent, width, height } = block
-    let parentBlock = bigScreenStore.findOneBlock(parent)
-    let { width: parentWidth, height: parentHeight } = parentBlock
-
-    if (left < 0 || top < 0 || left + width > parentWidth || top + height > parentHeight) {
-      return true
-    }
-  }
-
-
-  return false
-}
- */
 function ifUpdateAllParentState(bigScreenStore) {
-    /*
+  /*
       找出所有 block 的 left 的最小值，正常情况 minLeft = 0, 如果 minLeft !== 0  需要更新 parentBlock
 
       top 也是类此。
@@ -55,87 +34,47 @@ function ifUpdateAllParentState(bigScreenStore) {
     offsetLeft: 0,
     offsetRight: 0,
     offsetTop: 0,
-    offsetBootom: 0
+    offsetBootom: 0,
+  };
+  const parentBlock = bigScreenStore.findOneBlock(
+    bigScreenStore.focusDataParent
+  );
+  if (!bigScreenStore.focusDataParent.length) {
+    // 操作的不是组内元素
+    data.isUpdate = false;
+    return data;
   }
-  const parentBlock = bigScreenStore.findOneBlock(bigScreenStore.focusDataParent)
-  if (!bigScreenStore.focusDataParent.length) { // 操作的不是组内元素
-    data.isUpdate = false
-    return data
-  }
-  const { children, width: parentWidth, height: parentHeight } = parentBlock
+  const { children, width: parentWidth, height: parentHeight } = parentBlock;
   let state = {
     minLeft: Infinity,
     minTop: Infinity,
     maxLeft: -Infinity,
-    maxTop: -Infinity
-  }
-  children.forEach(block => {
-    const { left, top, width, height } = block
-    state.minLeft = state.minLeft < left ? state.minLeft : left
-    state.minTop = state.minTop < top ? state.minTop : top
-    state.maxTop = top + height > state.maxTop ? top + height : state.maxTop
-    state.maxLeft = left + width > state.maxLeft ? left + width : state.maxLeft
-  })
+    maxTop: -Infinity,
+  };
+  children.forEach((block) => {
+    const { left, top, width, height } = block;
+    state.minLeft = state.minLeft < left ? state.minLeft : left;
+    state.minTop = state.minTop < top ? state.minTop : top;
+    state.maxTop = top + height > state.maxTop ? top + height : state.maxTop;
+    state.maxLeft = left + width > state.maxLeft ? left + width : state.maxLeft;
+  });
   if (state.minLeft !== 0) {
-    data.isUpdate = true
-    data.offsetLeft = state.minLeft
+    data.isUpdate = true;
+    data.offsetLeft = state.minLeft;
   }
   if (state.minTop !== 0) {
-    data.isUpdate = true
-    data.offsetTop = state.minTop
+    data.isUpdate = true;
+    data.offsetTop = state.minTop;
   }
   if (state.maxTop !== parentHeight) {
-    data.isUpdate = true
-    data.offsetBootom = state.maxTop - parentHeight
+    data.isUpdate = true;
+    data.offsetBootom = state.maxTop - parentHeight;
   }
   if (state.maxLeft !== parentWidth) {
-    data.isUpdate = true
-    data.offsetRight = state.maxLeft - parentWidth
+    data.isUpdate = true;
+    data.offsetRight = state.maxLeft - parentWidth;
   }
-  // console.log(parentBlock, 'parentBlock~~~~~')
-  // console.log(state, 'state')
-  return data
-}
-// 找到最大偏移量
-function findMaxOffset(bigScreenStore) {
-  let state = {
-    offsetTop: -Infinity,
-    offsetBootom: -Infinity,
-    offsetLeft: -Infinity,
-    offsetRight: -Infinity
-  }
-  let focusData = bigScreenStore.focusData.focus
-
-  for (let i = 0; i < focusData.length; i++) {
-    const block = focusData[i]
-    const { left, top, parent, width, height } = block
-    let parentBlock = bigScreenStore.findOneBlock(parent)
-    let { width: parentWidth, height: parentHeight } = parentBlock
-
-    if (left < 0) {
-      let absLeft = Math.abs(left)
-      state.offsetLeft = state.offsetLeft < absLeft ? absLeft : state.offsetLeft
-    }
-
-    if (top < 0) {
-      let absTop = Math.abs(top)
-      state.offsetTop = state.offsetTop < absTop ? absTop : state.offsetTop
-    }
-
-    if (left + width > parentWidth) {
-      let offsetRight = left + width - parentWidth
-      state.offsetRight = state.offsetRight < offsetRight ? offsetRight : state.offsetRight
-    }
-
-    if (top + height > parentHeight) {
-      let offsetBootom = top + height - parentHeight
-      state.offsetBootom = state.offsetBootom < offsetBootom ? offsetBootom : state.offsetBootom
-    }
-
-
-  }
-
-  return state
+  return data;
 }
 
 export const useCalculateEditorBlockGroup = (blocks) => {
@@ -226,27 +165,31 @@ export const useRemoveBlockGroup = (lastSelectBlock) => {
 
 // 更新所有上级（组）的数据
 export const useUpdateAllParentState = (bigScreenStore) => {
-  const { isUpdate, offsetLeft, offsetTop, offsetBootom, offsetRight } = ifUpdateAllParentState(bigScreenStore)
+  const { isUpdate, offsetLeft, offsetTop, offsetBootom, offsetRight } =
+    ifUpdateAllParentState(bigScreenStore);
   if (isUpdate) {
-   console.log(offsetLeft, offsetTop, offsetBootom, offsetRight)
-    const parentUuid = bigScreenStore.focusDataParent
-    const parentBlock = bigScreenStore.findOneBlock(parentUuid)
-    const { width: parentWidth, height: parentHeight, top: parentTop, left: parentLeft } = parentBlock
+    console.log(offsetLeft, offsetTop, offsetBootom, offsetRight);
+    const parentUuid = bigScreenStore.focusDataParent;
+    const parentBlock = bigScreenStore.findOneBlock(parentUuid);
+    const {
+      width: parentWidth,
+      height: parentHeight,
+      top: parentTop,
+      left: parentLeft,
+    } = parentBlock;
 
-
-     bigScreenStore.updateOneBlockData(parentUuid, {
-        height: parentHeight - offsetTop + offsetBootom,
-       top: parentTop + offsetTop,
-        width: parentWidth - offsetLeft + offsetRight,
-        left: parentLeft + offsetLeft,
-        children: parentBlock.children.map(item => {
-          item.top -= offsetTop
-           item.left -= offsetLeft
-          return item
-        })
-    })
-
+    bigScreenStore.updateOneBlockData(parentUuid, {
+      width: parentWidth - offsetLeft + offsetRight,
+      height: parentHeight - offsetTop + offsetBootom,
+      top: parentTop + offsetTop,
+      left: parentLeft + offsetLeft,
+      children: parentBlock.children.map((item) => {
+        item.top -= offsetTop;
+        item.left -= offsetLeft;
+        return item;
+      }),
+    });
   } else {
-    console.log('no')
+    console.log('no');
   }
-}
+};
