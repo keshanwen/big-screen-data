@@ -50,6 +50,8 @@
   ></div>
 </template>
 <script setup>
+import { usebigScreenStore } from '../data/bigScreenGlobalStore'
+import { useUpdateAllParentState } from '../hooks/useGroup'
 
 const props = defineProps({
   block: {
@@ -57,6 +59,8 @@ const props = defineProps({
     required: true,
   },
 });
+
+const bigScreenStore = usebigScreenStore()
 
 let data = {};
 
@@ -70,6 +74,7 @@ const onmousedown = (e, direction) => {
     startLeft: props.block.left,
     startTop: props.block.top,
     direction,
+    dragging: false
   };
   document.body.addEventListener('mousemove', onmousemove);
   document.body.addEventListener('mouseup', onmouseup);
@@ -86,6 +91,7 @@ const onmousemove = (e) => {
     startTop,
     direction,
   } = data;
+  data.dragging = true
 
   if (direction.horizontal == 'center') {
     // 如果拖拽的是 中间的点 X轴是不变的
@@ -120,6 +126,11 @@ const onmousemove = (e) => {
 const onmouseup = () => {
   document.body.removeEventListener('mousemove', onmousemove);
   document.body.removeEventListener('mouseup', onmouseup);
+
+  if (data.dragging) {
+    // 改变组内元素时，可能需要更新所有的父级数据
+    useUpdateAllParentState(bigScreenStore, bigScreenStore.focusDataParent)
+  }
 };
 </script>
 
