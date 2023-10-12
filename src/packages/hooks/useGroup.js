@@ -192,3 +192,55 @@ export const useUpdateAllParentState = (bigScreenStore, parentUuid = []) => {
     console.log('no need update parent')
   }
 };
+
+/*
+  由 父 计算儿子
+*/
+
+export const clearSonsInit = (block,bigScreenStore) => {
+   const { parent = [], children = [] ,uuid } = block
+    if (children?.length) {
+      const blockObj = cloneDeep(bigScreenStore.findOneBlock([...parent, uuid]))
+      bigScreenStore.updateOneBlockData([...parent, uuid], {
+        children: blockObj.children.map(item => {
+          item.initWidth = null
+          item.initHeight = null
+          item.initLeft = null
+          item.initTop = null
+          return item
+        })
+      })
+      blockObj.children.forEach(item => {
+        clearSonsInit(item, bigScreenStore)
+      })
+    }
+
+}
+
+// 更新所有的子元素，改变父元素的大小时
+export const useUpdateAllSonState = (block,bigScreenStore,xScale,yScale) => {
+  const { parent = [], children = [] ,uuid } = block
+  if (!children?.length) {
+    console.log('not need update son')
+    return
+  }
+
+  const blockObj = cloneDeep(bigScreenStore.findOneBlock([...parent, uuid]))
+  bigScreenStore.updateOneBlockData([...parent, uuid], {
+    children: blockObj.children.map(item => {
+      item.initWidth = item.initWidth || item.width // 记录初始值
+      item.initHeight = item.initHeight || item.height
+      item.initLeft = item.initLeft || item.left
+      item.initTop = item.initTop || item.top
+      item.width = xScale * item.initWidth
+      item.height = yScale * item.initHeight
+      item.left = xScale * item.initLeft
+      item.top = yScale * item.initTop
+      return item
+    })
+  })
+
+  blockObj.children.forEach(item => {
+    useUpdateAllSonState(item, bigScreenStore,xScale,yScale)
+  })
+}

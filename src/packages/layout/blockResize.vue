@@ -51,7 +51,8 @@
 </template>
 <script setup>
 import { usebigScreenStore } from '../data/bigScreenGlobalStore'
-import { useUpdateAllParentState } from '../hooks/useGroup'
+import { useUpdateAllParentState, useUpdateAllSonState,clearSonsInit } from '../hooks/useGroup'
+import { cloneDeep } from '../utils/util';
 
 const props = defineProps({
   block: {
@@ -121,6 +122,12 @@ const onmousemove = (e) => {
   props.block.width = width;
   props.block.height = height; // 拖拽的时候 改变了宽高
   props.block.hasResize = true;
+
+    // 算出改变的比列
+  let xScale = width / startWidth
+  let yScale = height / startHeight
+  // 更新所有子元素的位置
+  useUpdateAllSonState(props.block, bigScreenStore, xScale, yScale)
 };
 
 const onmouseup = () => {
@@ -128,6 +135,8 @@ const onmouseup = () => {
   document.body.removeEventListener('mouseup', onmouseup);
 
   if (data.dragging) {
+    // 清空所有子元素的 init
+    clearSonsInit(props.block, bigScreenStore)
     // 改变组内元素时，可能需要更新所有的父级数据
     useUpdateAllParentState(bigScreenStore, bigScreenStore.focusDataParent)
   }
