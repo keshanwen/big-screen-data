@@ -1,13 +1,12 @@
 <template>
-  <div class="combine-home">
+  <div class="combine-home" :style="{
+        textIndent: getTextIndent()
+      }">
     <div
       :class="[
         props.block.focus ? 'lay-item-block-focus' : '',
         'combine-title',
       ]"
-      :style="{
-        textIndent: getTextIndent()
-      }"
       @click="isShowMore"
       @mousedown="(e) => blockMousedown(e, props.block, true)"
     >
