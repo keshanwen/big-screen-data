@@ -3,7 +3,7 @@
       ref="blockRef"
       :style="blockStyles"
       :class="[
-        props.block.focus ? 'editor-block-home-focus' : '',
+        props.block.focus || props.block.halfFocus ? 'editor-block-home-focus' : '',
         'editor-block-home',
       ]"
       @mousedown="e => blockMousedown(e,block)"

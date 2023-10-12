@@ -12,6 +12,17 @@ export function useFocus(bigScreenStore, callback) {
     bigScreenStore.updateBigScreenState('selectIndex',-1)
   };
 
+  const updateBlockChildrenHalfFocus = (block) => {
+    const { focus, parent = [], uuid, children = [] } = block
+    const parentUuid = [...parent, uuid]
+    if (!children.length) return
+    bigScreenStore.updateOneBlockData(parentUuid, {}, (obj) => {
+      if (obj.uuid === parentUuid[parentUuid.length - 1]) {
+        obj.children.forEach( item => item.halfFocus = focus)
+      }
+    })
+  }
+
     // 双击的回调
   const blockDoubleClick = (e, block) => {
     e.preventDefault();
@@ -26,6 +37,7 @@ export function useFocus(bigScreenStore, callback) {
         obj.halfFocus = true
       })
     }
+    updateBlockChildrenHalfFocus(block)
   }
 
   const blockMousedown = (e, block, layerClick = false) => {
@@ -88,6 +100,7 @@ export function useFocus(bigScreenStore, callback) {
       } // 当自己已经被选中了，在次点击时还是选中状态
     }
     bigScreenStore.updateBigScreenState('selectIndex', block.uuid)
+    updateBlockChildrenHalfFocus(block)
     callback && callback(e);
   };
 

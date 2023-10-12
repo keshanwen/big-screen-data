@@ -93,7 +93,10 @@ export function useCommand(bigScreenStore) {
 
           let newBlock = useCalculateEditorBlockGroup(focusData);
 
-          newBlock.children = focusData;
+          newBlock.children = focusData.map(item => {
+            item.halfFocus = true
+            return item
+          })
           // 注意 newBlock 也要加上 parent 属性
           newBlock.parent = prevParent
           const { uuid } = newBlock;
@@ -222,7 +225,7 @@ export function useCommand(bigScreenStore) {
             blocks = blocks.filter(item => item.uuid !== uuid)
             blocks = [...newChildren, ...blocks]
             bigScreenStore.updateBigScreenState('blocks', blocks);
-          }
+                      }
           // console.log(JSON.stringify(blocks, null, 2))
           // console.log(parent, 'parent~~~~')
         },
