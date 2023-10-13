@@ -26,8 +26,8 @@
             <EditorBlockGroup v-if="block.group" :block="block" />
             <EditorBlock v-else :block="block" />
           </div>
-          <!-- 辅助线 -->
-          <GuideLines :markLine="markLine" />
+          <!-- 对齐线 -->
+          <snapline :markLine="markLine" />
           <!-- 勾选框 -->
           <CheckBox :positionData="positionData"/>
         </div>
@@ -55,7 +55,7 @@ import { useSketchRule } from './hooks/useSketchRule';
 import { useFocus } from './hooks/useFocus';
 import { useBlockDragger } from './hooks/useBlockDragger';
 import EditorBlock from './layout/block/editorBlock.vue';
-import GuideLines from './layout/guideLines.vue';
+import snapline from './layout/snapline.vue';
 import EditorBlockGroup from './layout/block/editorBlockGroup.vue'
 import { $dropdown, DropdownItem } from './layout/dialog/dropdown.jsx'
 import { COMMAND, MOUSEDOWN } from './config/provideInjectKey'
