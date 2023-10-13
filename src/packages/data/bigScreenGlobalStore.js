@@ -99,6 +99,7 @@ export const usebigScreenStore = defineStore('bigScreenStore', () => {
       if (clearDoubleClick) {
         obj.doubleClick = false
         obj.halfFocus = false
+        obj.checkFocus = false
       }
       obj.children?.length && obj.children.forEach(item => {
         clearBlock(item)

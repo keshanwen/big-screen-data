@@ -28,6 +28,8 @@
           </div>
           <!-- 辅助线 -->
           <GuideLines :markLine="markLine" />
+          <!-- 勾选框 -->
+          <CheckBox :positionData="positionData"/>
         </div>
       </div>
     </div>
@@ -58,6 +60,8 @@ import EditorBlockGroup from './layout/block/editorBlockGroup.vue'
 import { $dropdown, DropdownItem } from './layout/dialog/dropdown.jsx'
 import { COMMAND, MOUSEDOWN } from './config/provideInjectKey'
 import { useContextMenu } from './hooks/useContextMenu.jsx'
+import CheckBox from './layout/checkBox.vue'
+import { useCheckBox } from './hooks/useCheckBox'
 
 const command = inject(COMMAND) as any
 
@@ -68,7 +72,7 @@ let screenRef = ref();
 let canvasRef = ref();
 
 const bigScreenStore = usebigScreenStore();
-const { containerMousedown, blockMousedown } = useFocus(bigScreenStore, (e) => {
+const { blockMousedown } = useFocus(bigScreenStore, (e) => {
   // 获取焦点后进行拖拽
   mousedown(e)
 });
@@ -78,6 +82,8 @@ let { mousedown, markLine } = useBlockDragger(bigScreenStore);
 
 // 将  mousedown 传递下去
 provide(MOUSEDOWN, mousedown)
+
+const { containerMousedown, positionData } = useCheckBox(bigScreenStore, canvasRef)
 
 const canvasStyle = computed(() => {
   return {
@@ -162,6 +168,9 @@ onMounted(() => {
         background-color: ghostwhite;
         box-sizing: border-box;
         transform-origin: 0;
+      }
+      &__content:active {
+        cursor: crosshair;
       }
     }
   }

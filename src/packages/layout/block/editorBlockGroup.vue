@@ -2,7 +2,7 @@
     <div ref="blockGroupRef"
      :style="blockGroupStyles"
      :class="[
-      props.block.focus || props.block.halfFocus ? 'editor-block-group-home-focus' : '',
+      props.block.focus || props.block.halfFocus || props.block.checkFocus? 'editor-block-group-home-focus' : '',
       'editor-block-group-home',
     ]"
      @mousedown="e => blockMousedown(e,block)"

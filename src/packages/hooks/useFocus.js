@@ -7,7 +7,8 @@ function updateParentState() {
 
 export function useFocus(bigScreenStore, callback) {
 
-  const containerMousedown = () => {
+  const containerMousedown = (e) => {
+    console.log(e, 'e~~~~')
     bigScreenStore.clearBlockFocus(); // 点击容器让选中的失去焦点
     bigScreenStore.updateBigScreenState('selectIndex',-1)
   };
