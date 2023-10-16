@@ -112,7 +112,7 @@ const handleWheel = (e) => {
 
 const onContextMenuBlock = (e, block) => {
   e.preventDefault();
-  const showConent: any = useContextMenu(bigScreenStore, command)
+  const showConent: any = useContextMenu(bigScreenStore, command,block)
 
   function content() {
     return showConent.map(item => {

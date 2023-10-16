@@ -27,6 +27,9 @@ export function useCheckBox(bigScreenStore, canvasRef) {
     }
 
     return false */
+    if (block.lock) {
+      return false
+    }
 
     // 交集
     if ((endX < positionData.left) || (endY < positionData.top) || (startX > positionData.left + positionData.width) || (startY > positionData.top + positionData.height)) {

@@ -1,9 +1,24 @@
-import { cloneDeep } from '../utils/util'
+import { cloneDeep, findOneBlock } from '../utils/util'
 
 function updateParentState() {
 
 }
 
+export function isLock(block, bigScreenStore) {
+  const { lock, parent = [] } = cloneDeep(block)
+  const blocks = cloneDeep(bigScreenStore.state.blocks)
+
+  if (lock) return true
+  if (parent.length) {
+    for (let i = 0; i < parent.length; i++) {
+      let newParent = parent.slice(0, i + 1)
+      let obj = findOneBlock(newParent, blocks)
+      if (obj?.lock) return true
+    }
+  }
+
+  return false
+}
 
 export function useFocus(bigScreenStore, callback) {
 
@@ -28,6 +43,7 @@ export function useFocus(bigScreenStore, callback) {
   const blockDoubleClick = (e, block) => {
     e.preventDefault();
     e.stopPropagation();
+    if (isLock(block, bigScreenStore)) return
     bigScreenStore.clearBlockFocus()
     block.focus = true
     const { parent } = block
@@ -44,8 +60,10 @@ export function useFocus(bigScreenStore, callback) {
   const blockMousedown = (e, block, layerClick = false) => {
     // console.log(e.target, block, layerClick,'e~~~~~~')
 
+
     e.preventDefault();
     e.stopPropagation();
+    if (isLock(block, bigScreenStore)) return
     let isNoLeve = false
     /* 只能聚焦同级节点 */
     if (block.parent?.length) {

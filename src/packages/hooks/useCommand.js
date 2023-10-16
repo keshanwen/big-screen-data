@@ -3,6 +3,7 @@ import { cloneDeep, findOneBlock } from '../utils/util';
 import { events } from '../utils/events';
 import { START, END } from '../config/eventName';
 import { useCalculateEditorBlockGroup, useRemoveBlockGroup } from './useGroup';
+import { isLock } from '../hooks/useFocus'
 
 export function useCommand(bigScreenStore) {
   const state = {
@@ -39,11 +40,62 @@ export function useCommand(bigScreenStore) {
   };
 
   // 注册我们需要的指令
+  /* 锁定  */
+  registry({
+    name: 'lock',
+    pushQueue: true,
+    execute(currentBlock) {
+      let state = {
+        before: cloneDeep(bigScreenStore.state.blocks), // 当前的值
+        after: bigScreenStore.focusData.unfocused, // 选中的都删除了 留下的都是没选中的
+      };
+      return {
+        redo: () => {
+          if (currentBlock.focus) {
+            let focusData = bigScreenStore.focusData.focus;
+            focusData.forEach(block => {
+              block.lock = true
+              block.focus = false
+            })
+          } else {
+            currentBlock.lock = true
+          }
+
+        },
+        undo: () => {
+
+        },
+      };
+    },
+  });
+
+  /* 解锁  */
+  registry({
+    name: 'unlock',
+    pushQueue: true,
+    execute(currentBlock) {
+      let state = {
+        before: cloneDeep(bigScreenStore.state.blocks), // 当前的值
+        after: bigScreenStore.focusData.unfocused, // 选中的都删除了 留下的都是没选中的
+      };
+      return {
+        redo: () => {
+          currentBlock.lock = false
+          // 解锁的时候要考虑，不同级的 focus 状态
+          currentBlock.focus = !isLock(currentBlock, bigScreenStore)
+        },
+        undo: () => {
+
+        },
+      };
+    },
+  });
+
   /* 删除 */
   registry({
     name: 'delete', // 删除
     pushQueue: true,
-    execute() {
+    execute(currentBlock) {
       let state = {
         before: cloneDeep(bigScreenStore.state.blocks), // 当前的值
         after: bigScreenStore.focusData.unfocused, // 选中的都删除了 留下的都是没选中的
@@ -52,6 +104,10 @@ export function useCommand(bigScreenStore) {
         redo: () => {
           let focusData = cloneDeep(bigScreenStore.focusData.focus);
           let prevParent = cloneDeep(focusData[0].parent || []);
+          if (!currentBlock.focus) {
+            focusData = [currentBlock]
+            prevParent = focusData[0].parent || []
+          }
           let blocks = cloneDeep(bigScreenStore.state.blocks)
           if (prevParent.length) { // 删除的不是最外层的
             let parent = findOneBlock(prevParent, blocks)
