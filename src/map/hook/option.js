@@ -1,14 +1,14 @@
 
 export default (data) => {
   return  {
-        tooltip: { // 提示框组件
-          //数据格式化
-          formatter: function (params, callback) {
-            return (
-              params.seriesName + "<br />" + params.name + "：" + params.value
-            );
-          },
-        },
+        // tooltip: { // 提示框组件
+        //   //数据格式化
+        //   formatter: function (params, callback) {
+        //     return (
+        //       params.seriesName + "<br />" + params.name + "：" + params.value
+        //     );
+        //   },
+        // },
         visualMap: { // 视觉映射组件
           min: 0,
           max: 1000,
