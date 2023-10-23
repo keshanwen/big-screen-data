@@ -1,6 +1,10 @@
 <template>
   <div ref="containerRef" class="container">
   </div>
+  <div>
+    <input type="text" v-model="location">
+    <button @click="toOther">跳到</button>
+  </div>
 </template>
 
 
@@ -8,7 +12,11 @@
 import { ref, toRefs,reactive ,onMounted } from 'vue'
 import { useInitEchart } from '../../src/map/hook/initEchart'
 import setOption from '../../src/map/hook/option'
+import { isProvince, isCity } from '../map/utils/util'
+import axios from "axios";
+import * as echarts from 'echarts'
 
+let location = ref('')
 let containerRef = ref()
 let myEchart = null
 const state = reactive({
@@ -60,9 +68,35 @@ function mockData() {
 }
 // mockData()
 
+const toOther = async (e) => {
+  let name = location.value
+   if (isProvince(name)) {
+      const { ename } = params.data
+      if (!ename) return
+      const mapPath = `map/省份数据/json(省份)/${ename}.json`
+      const { data: mapData } = await axios.get(mapPath)
+      echarts.registerMap(name, mapData)
+      myEchart.setOption({
+        geo: [{ map: name }]
+      });
+      return;
+    }
+    const cityId = isCity(name)
+    // 市
+    if (cityId) {
+      const mapPath = `map/城市数据/${cityId}.json`
+      const { data: mapData } = await axios.get(mapPath)
+      echarts.registerMap(name, mapData)
+      myEchart.setOption({
+        geo: [{ map: name }]
+      });
+      return;
+    }
+}
+
 const init = () => {
   const option = setOption(dataList.value)
-  myEchart = useInitEchart(containerRef.value, option)
+  myEchart = useInitEchart(containerRef.value, option).echartInstance
 }
 
 onMounted(() => {
