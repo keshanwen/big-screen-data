@@ -31,20 +31,14 @@ export default (data) => {
       layoutSize: '90%',
       zoom: 1,
       label: {
-       // normal: {
-          show: true,
-         // textStyle: {
-            fontSize: 12,
-            color: '#43D0D6',
-          //},
-        //},
+        show: true,
+        fontSize: 12,
+        color: '#43D0D6',
       },
       itemStyle: {
-        //normal: {
-          color: '#062031',
-          borderWidth: 1.1,
-          borderColor: '#43D0D6',
-        //},
+        color: '#062031',
+        borderWidth: 1.1,
+        borderColor: '#43D0D6',
       },
       emphasis: {
         areaColor: '#FFB800',

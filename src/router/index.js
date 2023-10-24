@@ -12,10 +12,27 @@ const router = createRouter({
     {
       path: '/map',
       name: 'map',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import('../views/map.vue')
+    },
+     {
+      path: '/map1',
+      name: 'map1',
+      component: () => import('../views/map1.vue')
+    },
+      {
+      path: '/map2',
+      name: 'map2',
+      component: () => import('../views/map2.vue')
+    },
+       {
+      path: '/map3',
+      name: 'map3',
+      component: () => import('../views/map3.vue')
+    },
+        {
+      path: '/map4',
+      name: 'map4',
+      component: () => import('../views/map4.vue')
     }
   ]
 })
