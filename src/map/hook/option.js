@@ -8,6 +8,7 @@ export default (data) => {
     //     );
     //   },
     // },
+      backgroundColor:'#181F4E',
     visualMap: {
       // 视觉映射组件
       min: 0,

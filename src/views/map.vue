@@ -1,10 +1,10 @@
 <template>
   <div ref="containerRef" class="container">
   </div>
-  <div>
+  <!-- <div>
     <input type="text" v-model="location">
     <button @click="toOther">跳到</button>
-  </div>
+  </div> -->
 </template>
 
 
@@ -107,9 +107,7 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .container {
-  width: 1200px;
-  height: 800px;
-  border: 1px solid red;
+  height: 100vh;
 }
 
 </style>
