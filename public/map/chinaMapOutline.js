@@ -1,4 +1,4 @@
-var chinaMapOutline = {
+export var chinaMapOutline = {
   type: "FeatureCollection",
   features: [
     {
@@ -8264,7 +8264,7 @@ var chinaMapOutline = {
     },
   ],
 };
-var chinaMap = {
+export var chinaMap = {
   type: "FeatureCollection",
   features: [
     {
@@ -35584,91 +35584,6 @@ var chinaMap = {
             ],
           ],
         ],
-      },
-    },
-  ],
-};
-
-echarts.registerMap("chinaMap", chinaMap);
-echarts.registerMap("chinaMapOutline", chinaMapOutline);
-option = {
-  backgroundColor: "#181F4E",
-  tooltip: {
-    trigger: "item",
-  },
-  series: [
-    {
-      map: "chinaMapOutline",
-      silent: true,
-      type: "map",
-      zoom: 1,
-      label: {
-        normal: {
-          show: false,
-          textStyle: {
-            color: "#fff",
-          },
-        },
-        emphasis: {
-          textStyle: {
-            color: "#fff",
-          },
-        },
-      },
-      top: "10%",
-      roam: false,
-      itemStyle: {
-        normal: {
-          areaColor: "rgba(0,255,255,.02)",
-          borderColor: "#00ffff",
-          borderWidth: 1.5,
-          shadowColor: "#00ffff",
-          shadowOffsetX: 0,
-          shadowOffsetY: 4,
-          shadowBlur: 10,
-        },
-        emphasis: {
-          areaColor: "transparent", //悬浮背景
-          textStyle: {
-            color: "#fff",
-          },
-        },
-      },
-    },
-    {
-      map: "chinaMap",
-      type: "map",
-      zoom: 1,
-      label: {
-        normal: {
-          show: false,
-          textStyle: {
-            color: "#fff",
-          },
-        },
-        emphasis: {
-          textStyle: {
-            color: "#fff",
-          },
-        },
-      },
-      top: "10%",
-      tooltip: {
-        show: false,
-      },
-      roam: false,
-      itemStyle: {
-        normal: {
-          areaColor: "transparent",
-          borderColor: "rgba(0,255,255,.1)",
-          borderWidth: 1,
-        },
-        emphasis: {
-          areaColor: "rgba(0,255,255,.1)",
-          textStyle: {
-            color: "red",
-          },
-        },
       },
     },
   ],
