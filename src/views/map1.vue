@@ -11,42 +11,63 @@ import chinaJson from '../../public/map/china.json';
 let containerRef = ref();
 let echartInstance;
 
-
-
-
 const main = () => {
   echartInstance = echarts.init(containerRef.value);
   echarts.registerMap('china', chinaJson); // 注册可用的地图
-  const coord = chinaJson.features.map((val) => {
-    return {
-      name: val.properties.name,
-      value: val.properties.cp,
-      visualMap: false, // 这样样式不会被 visualMap 组件，影响
-    };
-  });
-  const bejingCoord = coord.filter((item) => item.name === '北京');
-  const nobejingCoord = coord.filter((item) => item.name !== '北京');
+  const lines_coord = [
+    {
+      coords: [
+        [119.5313, 29.8773],
+        [116.4551, 40.2539],
+      ],
+    },
+    {
+      coords: [
+        [114.072026, 22.552194],
+        [116.4551, 40.2539],
+      ],
+    },
+    {
+      coords: [
+        [115.89, 28.68],
+        [116.4551, 40.2539],
+      ],
+    },
+    {
+      coords: [
+        [111.65, 40.82],
+        [116.4551, 40.2539],
+      ],
+    },
+    {
+      coords: [
+        [114.48, 38.03],
+        [116.4551, 40.2539],
+      ],
+    },
+    {
+      coords: [
+        [126.63, 45.75],
+        [116.4551, 40.2539],
+      ],
+    },
+    {
+      coords: [
+        [106.71, 26.57],
+        [116.4551, 40.2539],
+      ],
+    },
+    // {
+    //   coords: [
+    //     [106.71, 26.57],
+    //     [122.1, 37.5]
+    //   ],
+    // },
+  ];
 
-/*   const data = [
-    { name: '北京' },
-    { name: '天津' },
-    { name: '上海' },
-    { name: '重庆' },
-    { name: '河北' },
-    { name: '河南' },
-    { name: '云南' },
-    { name: '辽宁' },
-    { name: '黑龙江' },
-    { name: '湖南' },
-    { name: '安徽' },
-    { name: '山东' },
-    { name: '新疆' },
-    { name: '江苏' },
-    { name: '浙江' },
-    { name: '江西' },
-  ]; */
   const option = {
-    geo: {  // 地理坐标系组件。 地理坐标系组件用于地图的绘制，支持在地理坐标系上绘制散点图，线集。
+    geo: {
+      // 地理坐标系组件。 地理坐标系组件用于地图的绘制，支持在地理坐标系上绘制散点图，线集。
       map: 'china', //引入地图数据, 使用 registerMap 注册的地图名称。ECharts 也可以使用 SVG 格式的地图
       zlevel: 10,
       show: true, // 是否显示地理坐标系组件
@@ -73,48 +94,35 @@ const main = () => {
     },
     series: [
       {
-        type: 'effectScatter', // 带有涟漪特效动画的散点（气泡）图。利用动画特效可以将某些想要突出的数据进行视觉突出。
-        coordinateSystem: 'geo',
+        type: 'lines', // 用于带有起点和终点信息的线数据的绘制，主要用于地图上的航线，路线的可视化
+        // name: 'lines', // 系列名称，用于tooltip的显示，legend 的图例筛选，在 setOption 更新数据和配置项时用于指定对应的系列。
+        coordinateSystem: 'geo', // 该系列使用的坐标系。
+       // geoIndex: 0, （使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件。）
         zlevel: 15,
-        symbolSize: 16,
-        rippleEffect: {
-          period: 6,
-          brushType: 'stroke',
-          scale: 8,
+        effect: { // 线特效的配置，
+          show: true,
+          period: 4,
+          trailLength: 0.1, // 特效尾迹的长度。取从 0 到 1 的值，数值越大尾迹越长。
+          symbol: 'arrow',// 特效图形的标记。
+          color: '#01AAED',
+          symbolSize: 6,
+          // loop: true, //是否循环显示特效。
         },
-        itemStyle: {
-          color: '#FF5722',
-          opacity: 1,
+        // symbol: 'circle', // 线两端的标记类型，可以是一个数组分别指定两端，也可以是单个统一指定。 具体支持的格式可以参考 标线的 symbol
+        // symbolSize: 4,
+        lineStyle: { // 线的颜色。 默认从option.color 调色盘 获取颜色。
+          // type: 'solid', // 线的类型。
+          // cap: 'round', // 用于指定线段末端的绘制方式
+          width: 1.2,
+          opacity: 0.6,
+          curveness: 0.2, // 边的曲度，支持从 0 到 1 的值，值越大曲度越大。
+          color: 'red',
+          // shadowColor: 'rgba(255,0,0,0.4)',
+          // shadowBlur: 10,// 图形阴影的模糊大小。该属性配合 shadowColor,shadowOffsetX, shadowOffsetY 一起设置图形的阴影效果。
+          // shadowOffsetX: 0,
+          //  shadowOffsetY: 0
         },
-        data: bejingCoord,
-      },
-      {
-        type: 'effectScatter',
-        coordinateSystem: 'geo',
-        zlevel: 15, // zlevel用于 Canvas 分层，不同zlevel值的图形会放置在不同的 Canvas 中，Canvas 分层是一种常见的优化手段
-        rippleEffect: { // 涟漪特效相关配置。
-          // color: 'red', // 涟漪的颜色，默认为散点的颜色。
-          // number: 3, // 波纹的数量
-          period: 4, // 动画的周期，秒数。
-          brushType: 'stroke', // 波纹的绘制方式
-          scale: 4, // 动画中波纹的最大缩放比例
-        },
-        // symbol: 'pin', // 标记的图形。
-        symbolSize: 8, // 标记的大小
-        // symbolSize: (value, params) => {
-        //   return 10
-        // }, // 标记的大小
-        // label: { // 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等
-        //   show: false
-        // },
-        itemStyle: { // 图形样式。
-          color: '#FFB800',
-          opacity: 1,
-        },
-        // emphasis: { // 高亮的图形和标签样式
-        //   scale: 20
-        // },
-        data: nobejingCoord,
+        data: lines_coord,
       },
     ],
   };
