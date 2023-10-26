@@ -20,5 +20,14 @@ export default defineConfig({
   server: {
     port: 1949,
     host: '0.0.0.0',
+    proxy: {
+      '/examples': {
+        target: 'https://echarts.apache.org',
+        secure: false,
+        changeOrigin: true,
+        // rewrite: (path) => path.replace(/^\/api/, ''),
+      }
+    }
+   // https: true
   },
 })
