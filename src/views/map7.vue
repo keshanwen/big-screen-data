@@ -4,55 +4,108 @@
 
 <script setup>
 import { ref, toRefs, reactive, onMounted } from 'vue';
-import axios from 'axios';
 import * as echarts from 'echarts';
 import chinaJson from '../../public/map/china.json';
 
 let containerRef = ref();
 let echartInstance;
 
-const getSvg = async function () {
-  return await axios.get('/examples/data/asset/geo/Map_of_Iceland.svg');
-};
-
-const main = async () => {
-  let option;
+const main = () => {
   echartInstance = echarts.init(containerRef.value);
-  const { data: svg } = await getSvg();
-  echarts.registerMap('iceland_svg', { svg: svg });
+  echarts.registerMap('china', chinaJson); // 注册可用的地图
 
-  const data = [
-    [488.2358421078053, 459.70913833075736, '中国',100],
-    [770.3415644319939, 757.9672194986475, '中国2' ,30],
-    [1180.0329284196291, 743.6141808346214, '中国3' ,80],
-    [894.03790632245, 1188.1985153835008, '中国4',61],
-    [1372.98925630313, 477.3839988649537, '中国5',70],
-    [1378.62251255796, 935.6708486282843, '中国6',81],
-  ]
+  const nobejingCoord = [
+    {
+      name: '台湾',
+      value: [121.509062, 25.044332],
+    },
+    {
+      name: '江西',
+      value: [115.892151, 28.676493],
+    },
+    {
+      name: '内蒙古',
+      value: [111.670801, 40.818311],
+    },
+    {
+      name: '吉林',
+      value: [125.3245, 43.886841],
+    },
+    {
+      name: '四川',
+      value: [104.065735, 30.659462],
+    },
+    {
+      name: '宁夏',
+      value: [106.278179, 38.46637],
+    },
+  ];
 
-  let index = 0
+  const data = nobejingCoord.map((item, index) => {
+    const { name, value } = item;
+    return [...value, name, (index + 1) * 100];
+  });
 
-  option = {
+  const option = {
     geo: {
-      map: 'iceland_svg',
-      roam: true,
+      map: 'china',
+      zlevel: 10,
+      show: true,
+      layoutCenter: ['50%', '50%'],
+      roam: false,
+      layoutSize: '90%',
+      zoom: 1,
+      label: {
+        show: false,
+        fontSize: 12,
+        color: '#43D0D6',
+      },
+      itemStyle: {
+        color: '#062031',
+        borderWidth: 1.1,
+        borderColor: '#43D0D6',
+      },
+      emphasis: {
+        areaColor: '#FFB800',
+        label: {
+          show: true,
+        },
+      },
     },
     series: [
+      {
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        zlevel: 15,
+        rippleEffect: {
+          period: 4,
+          brushType: 'stroke',
+          scale: 4,
+        },
+        symbolSize: 8,
+        itemStyle: {
+          color: '#FFB800',
+          opacity: 1,
+        },
+        data: nobejingCoord,
+      },
       {
         type: 'custom',
         name: 'customTips',
         coordinateSystem: 'geo',
         geoIndex: 0,
-        zlevel: 1,
-        data: [[488.2358421078053, 459.70913833075736, '中国',100]],
+        zlevel: 20,
+        data: [[115.892151, 28.676493, '江西', 100]],
         renderItem(params, api) {
+          // 坐标转换， 将经纬度，转换为 x,y 坐标
+          // api.value(0)获取维度为 0 的值
           const coord = api.coord([
             api.value(0, params.dataIndex),
             api.value(1, params.dataIndex),
           ]);
-          console.log(api.value(2))
           const circles = [];
           for (let i = 0; i < 5; i++) {
+            // 生成一个圆形光环
             circles.push({
               type: 'circle',
               shape: {
@@ -108,10 +161,13 @@ const main = async () => {
             let text = {
               type: 'text',
               z: 100,
-              x: 0,
+              x: 10,
               y: -40,
               style: {
-                text: [`${api.value(2)}`, `今年营收: $${api.value(3)} 万元`].join('\n'),
+                text: [
+                  `${api.value(2)}`,
+                  `今年营收: $${api.value(3)} 万元`,
+                ].join('\n'),
                 fill: 'red',
               },
             };
@@ -164,28 +220,25 @@ const main = async () => {
       },
     ],
   };
+  echartInstance.setOption(option);
 
-  option && echartInstance.setOption(option);
-
-  // customTips
+  let index = 0;
   setInterval(() => {
-    index += 1
+    index += 1;
 
     if (index >= data.length) {
-      index = 0
+      index = 0;
     }
 
     echartInstance.setOption({
       series: [
         {
           name: 'customTips',
-          data: [data[index]]
-        }
-      ]
-    })
-
-
-  }, 2000)
+          data: [data[index]],
+        },
+      ],
+    });
+  }, 1000);
 };
 
 onMounted(() => {
@@ -195,6 +248,9 @@ onMounted(() => {
 
 <style scoped lang="scss">
 .container {
+  // width: 1200px;
+  // height: 800px;
+  // border: 1px solid red;
   height: 100vh;
 }
 </style>
