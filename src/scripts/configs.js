@@ -1,11 +1,37 @@
 const path = require('path')
+const fs = require('fs')
+
+
+let codes = []
+const commonPath = path.join(__dirname, '../mapData/provinces-geojson')
+const files = fs.readdirSync(commonPath)
+files.forEach(item => {
+  let filePath = path.join(commonPath, `/${item}`)
+  console.log(filePath, 'filePath')
+  let ct = fs.readFileSync(filePath, 'utf8');
+  getCode(ct)
+})
+
+function getCode(obj) {
+  let { features } = JSON.parse(obj)
+  features.forEach(item => {
+    const { properties } = item
+    const { adcode } = properties
+    if (adcode !== 710000) {
+       codes.push(adcode)
+    }
+
+  })
+}
+
+
 
 
 /* // 省份 code
 let codes = [110000,120000,130000,140000,150000,210000,220000,230000,310000,320000,330000,340000,350000,360000,370000,410000,420000,430000,440000,450000,460000,500000,510000,520000,530000,540000,610000,620000,630000,640000,650000,710000,810000,820000] */
 
 
-let codes = [100000]
+// let codes = [100000]
 const ORIGIN_GEOJSON_DIR = path.resolve(__dirname, '../.temp/origin-geojson')
 
 const MERGED_GEOJSON_DIR = path.resolve(__dirname, '../.temp/merged-geojson')
