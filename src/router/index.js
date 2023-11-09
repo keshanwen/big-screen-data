@@ -63,6 +63,11 @@ const router = createRouter({
       path: '/map10',
       name: 'map10',
       component: () => import('../views/map10.vue')
+    },
+     {
+      path: '/map11',
+      name: 'map11',
+      component: () => import('../views/map11.vue')
     }
   ]
 })
