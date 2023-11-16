@@ -16,42 +16,63 @@ const main = () => {
   echarts.registerMap('china', chinaJson); // 注册可用的地图
   const lines_coord = [
     {
+      name: '数据1',
       coords: [
         [119.5313, 29.8773],
         [116.4551, 40.2539],
       ],
+      label: {
+        show: true,
+        formatter(p) {
+          console.log(p)
+          return '数据1'
+        }
+      }
     },
     {
+      name: '数据2',
       coords: [
         [114.072026, 22.552194],
         [116.4551, 40.2539],
       ],
+      label: {
+        show: true,
+        formatter(p) {
+          console.log(p)
+          return '数据2'
+        }
+      }
     },
     {
+      name: '数据3',
       coords: [
         [115.89, 28.68],
         [116.4551, 40.2539],
       ],
     },
     {
+      name: '数据4',
       coords: [
         [111.65, 40.82],
         [116.4551, 40.2539],
       ],
     },
     {
+      name: '数据5',
       coords: [
         [114.48, 38.03],
         [116.4551, 40.2539],
       ],
     },
     {
+      name: '数据6',
       coords: [
         [126.63, 45.75],
         [116.4551, 40.2539],
       ],
     },
     {
+      name: '数据7',
       coords: [
         [106.71, 26.57],
         [116.4551, 40.2539],
@@ -65,6 +86,56 @@ const main = () => {
     // },
   ];
 
+
+  /*
+
+      飞线
+        lineStyle: {
+          color: 'red', // 线的颜色
+          opacity: 0.4 // 透明度
+          type: 'dotted' // 线的形状
+           width: 1 // 飞线粗细
+          curveness: 0.2      // 飞线弧度
+        }
+        effect: {
+          trailLength: 0.2 // 流光长度
+          period: 2, // 动画时长
+           // 动画间隔  ？？？
+
+        }
+
+      落点气泡
+        见 effectScatter
+
+      itemStyle: {
+        color: '#FFB800', // 汽包颜色
+      }
+      symbol: 'pin', // 标记的图形。
+      symbolSize: 8, // 标记的大小
+      rippleEffect: { // 涟漪特效相关配置。
+        number: 3, // 波纹的数量
+        period: 3, // 动画的周期，秒数。
+        brushType: 'stroke', // 波纹的绘制方式
+        scale: 4, // 动画中波纹的最大缩放比例
+      },
+
+
+      // 数据标签 见 effectScatter
+       label: {
+          show: false,
+          color: '#fff',
+          fontSize: '12px',
+           position: 'bottom',
+          formatter(params) {
+            const { data, name } = params
+            const { config } = data
+            console.log(params, 'p')
+            return name
+          }
+        }
+
+  */
+
   const option = {
     geo: {
       // 地理坐标系组件。 地理坐标系组件用于地图的绘制，支持在地理坐标系上绘制散点图，线集。
@@ -76,9 +147,12 @@ const main = () => {
       layoutSize: '90%',
       zoom: 1,
       label: {
-        show: false,
+        show: true,
         fontSize: 12,
         color: '#43D0D6',
+        formatter(p) {
+          return ''
+        }
       },
       itemStyle: {
         color: '#062031',
@@ -96,25 +170,27 @@ const main = () => {
       {
         type: 'lines', // 用于带有起点和终点信息的线数据的绘制，主要用于地图上的航线，路线的可视化
         // name: 'lines', // 系列名称，用于tooltip的显示，legend 的图例筛选，在 setOption 更新数据和配置项时用于指定对应的系列。
-        coordinateSystem: 'geo', // 该系列使用的坐标系。
-       // geoIndex: 0, （使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件。）
+        // coordinateSystem: 'geo', // 该系列使用的坐标系。
+        geoIndex: 0, //（使用地理坐标系，通过 geoIndex 指定相应的地理坐标系组件。）
         zlevel: 15,
         effect: { // 线特效的配置，
           show: true,
-          period: 4,
-          trailLength: 0.1, // 特效尾迹的长度。取从 0 到 1 的值，数值越大尾迹越长。
+          period: 2,
+          // delay: 2000,
+          trailLength: 0.2, // 特效尾迹的长度。取从 0 到 1 的值，数值越大尾迹越长。
           symbol: 'arrow',// 特效图形的标记。
-          color: '#01AAED',
+         // color: '#01AAED', // 特效标记的颜色
           symbolSize: 6,
-          // loop: true, //是否循环显示特效。
+          loop: true, //是否循环显示特效。
+          // cap: 'round'
         },
         // symbol: 'circle', // 线两端的标记类型，可以是一个数组分别指定两端，也可以是单个统一指定。 具体支持的格式可以参考 标线的 symbol
         // symbolSize: 4,
         lineStyle: { // 线的颜色。 默认从option.color 调色盘 获取颜色。
-          // type: 'solid', // 线的类型。
+          // type: 'dotted', // 线的类型。
           // cap: 'round', // 用于指定线段末端的绘制方式
-          width: 1.2,
-          opacity: 0.6,
+          width: 1,
+          opacity: 0.2,
           curveness: 0.2, // 边的曲度，支持从 0 到 1 的值，值越大曲度越大。
           color: 'red',
           // shadowColor: 'rgba(255,0,0,0.4)',
@@ -123,6 +199,18 @@ const main = () => {
           //  shadowOffsetY: 0
         },
         data: lines_coord,
+        label: {
+          // show: true,
+          // formatter(p) {
+          //   console.log(p)
+          //   return 24
+          // }
+        },
+        // symbol: ['circle', 'circle'],
+        // symbolSize: [10, 10]
+        markPoint: {
+          symbol: 'circle'
+        }
       },
     ],
   };
