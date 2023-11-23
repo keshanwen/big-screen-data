@@ -16,15 +16,7 @@ const main = () => {
   echarts.registerMap('china', chinaJson); // 注册可用的地图
 
   const data = [
-    // {
-    //   name: '西藏', value: 100, visualMap: false, label: {
-    //     show: true,
-    //     formatter(params) {
-    //       console.log(params, '6666')
-    //       return 24
-    //     }
-    //   }
-    // },
+
     {
       name: '西藏', value: 100 },
     { name: '内蒙古', value: 200 },
