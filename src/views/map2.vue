@@ -22,10 +22,16 @@ const main = () => {
       name: val.properties.name,
       value: val.properties.cp,
       visualMap: false, // 这样样式不会被 visualMap 组件，影响
+      // itemStyle: { // 图形样式。
+      //   // color: '#FFB800',
+      //   opacity: 1,
+      // },
     };
   });
   const bejingCoord = coord.filter((item) => item.name === '北京');
   const nobejingCoord = coord.filter((item) => item.name !== '北京');
+
+  console.log(nobejingCoord)
 
 /*   const data = [
     { name: '北京' },
@@ -76,15 +82,23 @@ const main = () => {
         type: 'effectScatter', // 带有涟漪特效动画的散点（气泡）图。利用动画特效可以将某些想要突出的数据进行视觉突出。
         coordinateSystem: 'geo',
         zlevel: 15,
-        symbolSize: 16,
+        symbolSize: 8,
         rippleEffect: {
-          period: 6,
-          brushType: 'stroke',
-          scale: 8,
+            period: 4, // 动画的周期，秒数。
+            brushType: 'stroke', // 波纹的绘制方式
+            scale: 4, // 动画中波纹的最大缩放比例
         },
         itemStyle: {
           color: '#FF5722',
           opacity: 1,
+        },
+        label: {
+          show: true,
+           color: 'red',
+          formatter(p) {
+            console.log(p, 'p')
+            return 8
+          }
         },
         data: bejingCoord,
       },
@@ -92,6 +106,7 @@ const main = () => {
         type: 'effectScatter',
         coordinateSystem: 'geo',
         zlevel: 15, // zlevel用于 Canvas 分层，不同zlevel值的图形会放置在不同的 Canvas 中，Canvas 分层是一种常见的优化手段
+         // rippleEffect: undefined,
         rippleEffect: { // 涟漪特效相关配置。
           // color: 'red', // 涟漪的颜色，默认为散点的颜色。
           // number: 3, // 波纹的数量
@@ -99,8 +114,8 @@ const main = () => {
           brushType: 'stroke', // 波纹的绘制方式
           scale: 4, // 动画中波纹的最大缩放比例
         },
-        // symbol: 'pin', // 标记的图形。
-        symbolSize: 8, // 标记的大小
+        // symbol: 'none', // 标记的图形。
+        symbolSize:12, // 标记的大小
         // symbolSize: (value, params) => {
         //   return 10
         // }, // 标记的大小
@@ -110,6 +125,15 @@ const main = () => {
         itemStyle: { // 图形样式。
           color: '#FFB800',
           opacity: 1,
+        },
+        label: {
+          show: true,
+           //position: 'top',
+          color: '#fff',
+          formatter(p) {
+            console.log(p, 'p')
+            return 24
+          }
         },
         // emphasis: { // 高亮的图形和标签样式
         //   scale: 20

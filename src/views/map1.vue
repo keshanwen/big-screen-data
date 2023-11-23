@@ -17,6 +17,7 @@ const main = () => {
   const lines_coord = [
     {
       name: '数据1',
+      to: '北京',
       coords: [
         [119.5313, 29.8773],
         [116.4551, 40.2539],
@@ -31,6 +32,7 @@ const main = () => {
     },
     {
       name: '数据2',
+      to: '北京',
       coords: [
         [114.072026, 22.552194],
         [116.4551, 40.2539],
@@ -45,6 +47,7 @@ const main = () => {
     },
     {
       name: '数据3',
+      to: '北京',
       coords: [
         [115.89, 28.68],
         [116.4551, 40.2539],
@@ -52,20 +55,22 @@ const main = () => {
     },
     {
       name: '数据4',
+      to: '北京',
       coords: [
         [111.65, 40.82],
         [116.4551, 40.2539],
       ],
     },
-    {
-      name: '数据5',
-      coords: [
-        [114.48, 38.03],
-        [116.4551, 40.2539],
-      ],
-    },
+    // {
+    //   name: '数据5',
+    //   coords: [
+    //     [114.48, 38.03],
+    //     [116.4551, 40.2539],
+    //   ],
+    // },
     {
       name: '数据6',
+       to: '北京',
       coords: [
         [126.63, 45.75],
         [116.4551, 40.2539],
@@ -73,17 +78,12 @@ const main = () => {
     },
     {
       name: '数据7',
+       to: '北京',
       coords: [
         [106.71, 26.57],
         [116.4551, 40.2539],
       ],
     },
-    // {
-    //   coords: [
-    //     [106.71, 26.57],
-    //     [122.1, 37.5]
-    //   ],
-    // },
   ];
 
 
@@ -147,7 +147,7 @@ const main = () => {
       layoutSize: '90%',
       zoom: 1,
       label: {
-        show: true,
+        show: false,
         fontSize: 12,
         color: '#43D0D6',
         formatter(p) {
@@ -200,11 +200,14 @@ const main = () => {
         },
         data: lines_coord,
         label: {
-          // show: true,
-          // formatter(p) {
-          //   console.log(p)
-          //   return 24
-          // }
+          show: true,
+          position: 'start',
+          formatter(p) {
+            console.log(p)
+            const { data } = p
+            const { name } = data
+            return name
+          }
         },
         // symbol: ['circle', 'circle'],
         // symbolSize: [10, 10]
