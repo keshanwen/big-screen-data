@@ -1,15 +1,33 @@
 <template>
+  <!-- <my-tooltip-kk :myContent="content" :myStyle="style"/> -->
+  <!-- <myTooltip :myContent="content" :myStyle="style"/> -->
+  <!-- <myTooltipInstance/> -->
   <div ref="containerRef" class="container"></div>
 </template>
 
 <script setup>
-import { ref, toRefs, reactive, onMounted } from 'vue';
+import { ref, toRefs, reactive, onMounted, createApp } from 'vue';
 import axios from 'axios';
 import * as echarts from 'echarts';
 import chinaJson from '../../public/map/china.json';
+import myTooltip from './myTooltip.vue'
 
 let containerRef = ref();
 let echartInstance;
+let content = [
+  {
+    title: '中国',
+    tips: '今年营收：Y 10000 元'
+  }
+]
+let style = {
+  background: 'blue',
+  color: '#F2EEEEFF',
+  fontSize: '12px',
+  fontStyle: 'bolder',
+  fontWeight: 'bolder',
+}
+
 
 const main = () => {
   echartInstance = echarts.init(containerRef.value);
@@ -33,60 +51,56 @@ const main = () => {
 
   const lines_coord = [
     {
-      name: '数据1',
+      name: '地点1',
+      form: '地点1',
       to: '北京',
+      value: 100,
       coords: [
         [119.5313, 29.8773],
         [116.4551, 40.2539],
       ],
-      label: {
-        show: true,
-        formatter(p) {
-          return '数据1'
-        }
-      }
+
     },
     {
-      name: '数据2',
+      form: '地点2',
       to: '北京',
+      value: 300,
       coords: [
         [114.072026, 22.552194],
         [116.4551, 40.2539],
       ],
-      label: {
-        show: true,
-        formatter(p) {
-          return '数据2'
-        }
-      }
     },
     {
-      name: '数据3',
+      form: '地点3',
       to: '北京',
+      value: 500,
       coords: [
         [115.89, 28.68],
         [116.4551, 40.2539],
       ],
     },
     {
-      name: '数据4',
+      form: '地点4',
       to: '北京',
+      value: 800,
       coords: [
         [111.65, 40.82],
         [116.4551, 40.2539],
       ],
     },
     {
-      name: '数据6',
+      form: '地点5',
       to: '北京',
+      value: 1000,
       coords: [
         [126.63, 45.75],
         [116.4551, 40.2539],
       ],
     },
     {
-      name: '数据7',
+      form: '地点6',
       to: '北京',
+      value: 1400,
       coords: [
         [106.71, 26.57],
         [116.4551, 40.2539],
@@ -95,6 +109,22 @@ const main = () => {
   ];
 
   const option = {
+    tooltip: {
+      show: true,
+      triggerOn: 'none',
+      padding: 0,
+      borderWidth: 0,
+      backgroundColor: 'red',
+      textStyle: {
+        color: '#F2EEEEFF',
+        fontStyle: 'normal',
+        fontWeight: 'normal',
+        fontSize: 12
+      },
+      // hideDelay: 1000,
+      // position: 'top',
+     // alwaysShowContent: true,
+    },
      visualMap: { // 视觉映射组件
       type: 'continuous',
       left: 'left',
@@ -140,10 +170,14 @@ const main = () => {
      {
         type: 'map',
         geoIndex: 0,
+        tooltip: {
+          show: false
+        },
         data,
       },
       {
         type: 'lines',
+        name: 'lines',
         coordinateSystem: 'geo',
         geoIndex: 0,
         zlevel: 15,
@@ -171,10 +205,57 @@ const main = () => {
           }
         },
         data: lines_coord,
+        tooltip: {
+          show: true,
+          formatter(params) {
+           // console.log(params)
+            const { data } = params
+            const { form } = data
+
+            const div = document.createElement('div')
+            const app = createApp(myTooltip, {
+              myContent: [
+                 {
+                  title: form,
+                  tips: '今年营收：....... 亿'
+                }
+              ]
+            })
+            app.mount(div)
+
+            return div
+          }
+        }
       },
     ],
   };
   echartInstance.setOption(option);
+
+  let index = 0
+  let showTip = setInterval(() => {
+    if (index >= lines_coord.length) {
+      index = 0
+    }
+    const data = lines_coord[index]
+    const { coords } = data
+    let [position] = coords
+    position = echartInstance.convertToPixel('geo', position);
+
+    echartInstance.dispatchAction({
+      type: 'showTip',
+      geoIndex: 0,
+      seriesIndex: 1, // ····
+      dataIndex: index,
+      position: (point, params, dom, rect, size) => {
+        const { contentSize } = size
+        const height = contentSize[1]
+        let prev = position[1]
+        position[1] = prev - height
+        return position
+      }
+    })
+    index++
+  },3000)
 };
 
 onMounted(() => {
