@@ -611,19 +611,6 @@ const main = () => {
 				formatter: function(params) {
 					console.log(params)
           let tipHtml = '';
-          tipHtml = `<div style="position: relative; font-size: 12px;color: yellow;left: -10px;">
-             <div style="position: absolute;
-              height: 40px;
-              left: 10px;
-              border-left: 1px solid darkorange;"></div>
-            <div style="position: absolute; top: 40px;height: 46px; padding: 4px;
-              box-sizing: border-box;
-              border: 1px solid red;">
-              <div>中国</div>
-              <div>今年营收: 10000 元</div>
-            </div>
-
-          </div>`
 					return tipHtml;
 				},
 		},
@@ -673,68 +660,39 @@ const main = () => {
             })
             .slice(0, 10)
         ),
-        symbolSize: function (val) {
-          return val[2] / 10;
+       symbol: 'emptyCircle', // emptyCircle
+        symbolSize: (value, paramrs) => {
+          console.log(value, paramrs, '~~~~~~~')
+          return 20
         },
         showEffectOn: 'render',
         rippleEffect: {
           brushType: 'stroke',
         },
-        label: {
-          formatter: '{b}',
-          position: 'left',
-          show: false,
+        effect: {
+          show: true, // 开启涟漪特效
+          period: 6, // 控制涟漪的抖动频率
+          trailLength: 0.7, // 控制涟漪的尾迹长度
+          color: 'red', // 控制涟漪的颜色
+          symbolSize: [5, 20],// 控制涟漪的大小范围
+          opacity: 0,
+           shadowBlur: 0
         },
         itemStyle: {
           color: 'yellow',
-          shadowBlur: 10,
+          shadowBlur: 200,
           shadowColor: 'yellow',
+          opacity: 0
         },
         zlevel: 1,
+        markPoint: {
+           symbol: 'arrow'
+        }
       },
     ],
   };
   echartInstance.setOption(option);
 
-  let index = 0;
-
-
-let showTip = setInterval(() => {
-    echartInstance.dispatchAction({
-      type: 'showTip',
-      seriesIndex: 0,
-      dataIndex: index,
-    })
-    index++;
-    if (index >= option.series[0].data.length) {
-      index = 0;
-    }
-  }, 2000)
-
-  echartInstance.on('mouseover', function(params) {
-    console.log(params);
-    clearInterval(showTip);
-    echartInstance.dispatchAction({
-      type: 'showTip',
-      seriesIndex: 0,
-      dataIndex: params.dataIndex,
-    });
-  });
-
-  echartInstance.on('mouseout', function(params) {
-			showTip && clearInterval(showTip);
-			showTip = setInterval(function() {
-				echartInstance.dispatchAction({
-					type: 'showTip',
-					seriesIndex: 0,
-					dataIndex: index,
-				});
-				index++;
-				if (index >= option.series[0].data.length) {
-					index = 0;
-				}
-			}, 2000);
-		});
 
 };
 

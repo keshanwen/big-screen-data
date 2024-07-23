@@ -43,111 +43,28 @@ const main = () => {
       inRange: {
         color: ['#e0ffff', 'blue'], //取值范围的颜色
       },
-      show: true, //图注
+      show: false, //图注
     },
     geo: [ // 地理坐标系组件。 地理坐标系组件用于地图的绘制，支持在地理坐标系上绘制散点图，线集。
       {
         map: 'china', //引入地图数据, 使用 registerMap 注册的地图名称。ECharts 也可以使用 SVG 格式的地图
        // center: [0, 29.71],
-        zlevel: 10,
+       // zlevel: 10,
         show: true, // 是否显示地理坐标系组件
         layoutCenter: ['50%', '50%'],
-        roam: false,
+        // roam: false,
         layoutSize: '90%',
         zoom: 1,
         label: {
-          show: true,
-          fontSize: 12,
-          color: '#43D0D6',
-          formatter(params) {
-            const { name } = params;
-            const arr = [
-              '西藏',
-              '内蒙古',
-              '江西',
-              '陕西',
-              '山东',
-              '福建',
-              '浙江',
-              '广东',
-              '上海',
-              '北京',
-            ];
-            if (arr.includes(name)) {
-              return name;
-            } else {
-              return '';
-            }
-          },
+          show: false,
         },
         itemStyle: { // 地图区域的多边形 图形样式。
-          // areaColor: 'red', // 地图区域的颜色。
           color: '#062031', // 图形的颜色。
           borderWidth: 1.1, // 描边线宽。为 0 时无描边。
           borderColor: '#43D0D6', // 图形的描边颜色。支持的颜色格式同 color，不支持回调函数。
-          //borderType: 'dashed' // 描边类型。
         },
         emphasis: { // 高亮状态下的多边形和标签样式。
-          focus: 'self',
-          areaColor: '#FFB800',
-          label: {
-            show: true,
-          },
-        },
-        regions: [{ // 在地图中对特定的区域配置样式。
-            name: '广东',
-            itemStyle: {
-              //   areaColor: 'red',
-              // color: 'red',
-              borderWidth: 1,
-                borderColor: 'red'
-            }
-        }]
-      },
-      {
-        // 地理坐标系组件。 地理坐标系组件用于地图的绘制，支持在地理坐标系上绘制散点图，线集。
-        map: 'guangdong', //引入地图数据, 使用 registerMap 注册的地图名称。ECharts 也可以使用 SVG 格式的地图
-        zlevel: 14,
-        show: false, // 是否显示地理坐标系组件
-        layoutCenter: ['50%', '50%'],
-        roam: false,
-        layoutSize: '90%',
-        zoom: 1,
-        label: {
-          show: true,
-          fontSize: 12,
-          color: '#43D0D6',
-          formatter(params) {
-            const { name } = params;
-            const arr = [
-              '西藏',
-              '内蒙古',
-              '江西',
-              '陕西',
-              '山东',
-              '福建',
-              '浙江',
-              '广东',
-              '上海',
-              '北京',
-            ];
-            if (arr.includes(name)) {
-              return name;
-            } else {
-              return '';
-            }
-          },
-        },
-        itemStyle: {
-          color: '#062031',
-          borderWidth: 1.1,
-          borderColor: '#43D0D6',
-        },
-        emphasis: {
-          areaColor: '#FFB800',
-          label: {
-            show: true,
-          },
+          disabled: true,
         },
       },
     ],

@@ -88,6 +88,11 @@ const router = createRouter({
       path: '/map15',
       name: 'map15',
       component: () => import('../views/map15.vue')
+    },
+     {
+      path: '/dataSet',
+      name: 'dataSet',
+      component: () => import('../views/dataSet.vue')
     }
   ]
 })
